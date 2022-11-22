@@ -26,6 +26,7 @@
     <Compile Include="Anotation.py" />
     <Compile Include="ImageHandler.py" />
     <Compile Include="ImageSorter.py" />
+    <Compile Include="IO.py" />
     <Compile Include="Metrics.py" />
     <Compile Include="Session.py" />
     <Compile Include="UserInterface.py" />

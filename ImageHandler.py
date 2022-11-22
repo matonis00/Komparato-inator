@@ -19,7 +19,7 @@ class ImageHandler():
     def scan():
         pass
 
-    #should save resoults to __paths i suppouse
+    #should save results to __paths i suppouse
     def group():
        pass
 
