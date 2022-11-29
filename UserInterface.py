@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import math
     
 import numpy as np
 import cv2 
@@ -16,6 +17,7 @@ class UserInterface():
 
 img = cv2.imread("nowy.jpg")
 img2 = np.zeros((img.shape[0],img.shape[1],4), np.uint8)
+temp=img;
 drawing = False # true if mouse is pressed
 mode = True # if True, draw rectangle.
 ix,iy = -1,-1
@@ -45,8 +47,11 @@ def draw_circle(event,x,y,flags,param):
         cv2.rectangle(img,(ix,iy),(x,y),(0,255,0),2)
 
     else:
-        cv2.circle(img2,(x,y),5,(0,0,255,255),-1)
-        cv2.circle(img,(x,y),5,(0,0,255),-1)
+        sx=int((ix+x)/2)
+        sy=int((iy+y)/2)
+        truR=int(math.sqrt(math.pow(ix-x,2)+math.pow(iy-y,2))/2)
+        cv2.circle(img2,(sx,sy),truR,(0,0,255,255),2)
+        cv2.circle(img,(sx,sy),truR,(0,0,255,255),2)
 
 
 cv2.namedWindow('image')
