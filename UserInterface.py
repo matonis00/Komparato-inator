@@ -15,6 +15,7 @@ class UserInterface():
         pass
 
 img = cv2.imread("nowy.jpg")
+img2 = np.zeros((img.shape[0],img.shape[1],4), np.uint8)
 drawing = False # true if mouse is pressed
 mode = True # if True, draw rectangle.
 ix,iy = -1,-1
@@ -40,20 +41,27 @@ def draw_circle(event,x,y,flags,param):
   elif event == cv2.EVENT_LBUTTONUP:
     drawing = False
     if mode == True:
+        cv2.rectangle(img2,(ix,iy),(x,y),(0,255,0,255),2)
         cv2.rectangle(img,(ix,iy),(x,y),(0,255,0),2)
 
     else:
+        cv2.circle(img2,(x,y),5,(0,0,255,255),-1)
         cv2.circle(img,(x,y),5,(0,0,255),-1)
 
-#img = np.zeros((512,512,3), np.uint8)
+
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',draw_circle)
 
 while(1):
  cv2.imshow('image',img)
- k = cv2.waitKey(1) & 0xFF
+ #cv2.imshow('adnotation',img2)
+ k = cv2.waitKey(1)
+ print(k)
  if k == ord('m'):
     mode = not mode
+ elif k == ord('s'):
+    cv2.imwrite("./transparent_img.png",img2)
+    cv2.imwrite("./cat.png",img)
  elif k == 27:
     break
 
