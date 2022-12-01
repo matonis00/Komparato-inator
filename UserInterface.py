@@ -44,6 +44,13 @@ class UserInterface():
         isDrawing = False# true if mouse is pressed
         ix,iy =-1,-1
         # mouse callback function
+        # C - Clear
+        # D - Hand draw
+        # R - Rectangle
+        # E - Circle
+        # S - Save
+        # ESC - exit
+
         def draw(event,x,y,flags,param):
             global ix,iy
             global isDrawing# true if mouse is pressed
