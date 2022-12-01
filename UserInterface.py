@@ -37,28 +37,32 @@ class UserInterface():
             outputPath="./Annotations/"+outputImage
             i+=1
 
-        drawing = False # true if mouse is pressed
+       
         handDrawMode = False # true if hand drawing mode is on
         RectangleMode = True # if True, draw rectangle.
         CircleMode = False # if True, draw circle.
-        ix,iy = -1,-1
+        isDrawing = False# true if mouse is pressed
+        ix,iy =-1,-1
         # mouse callback function
         def draw(event,x,y,flags,param):
             global ix,iy
+            global isDrawing# true if mouse is pressed
 
             if event == cv2.EVENT_LBUTTONDOWN:
-                drawing = True
+                isDrawing = True
                 ix,iy = x,y
-            #elif event== cv2.EVENT_MOUSEMOVE && handDrawMode==True:
-               # if drawing==True
-
+            elif event == cv2.EVENT_MOUSEMOVE and handDrawMode == True:
+                if isDrawing == True:
+                    cv2.line(annotationLayer,(ix,iy),(x,y),(0,255,0,255),2)
+                    cv2.line(inputImage,(ix,iy),(x,y),(0,255,0,),2)
+                    ix,iy = x,y
 
             elif event == cv2.EVENT_LBUTTONUP:
-                drawing = False
+                isDrawing = False
                 if RectangleMode == True:
                     cv2.rectangle(annotationLayer,(ix,iy),(x,y),(0,255,0,255),2)
                     cv2.rectangle(inputImage,(ix,iy),(x,y),(0,255,0),2)
-                elif CircleMode==True:
+                elif CircleMode == True:
                     sx=int((ix+x)/2)
                     sy=int((iy+y)/2)
                     truR=int(math.sqrt(math.pow(ix-x,2)+math.pow(iy-y,2))/2)
