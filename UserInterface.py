@@ -9,7 +9,7 @@ import os
 import sys
 import cv2 
 
-
+import Metrics
 
 class DialogBox(QDialog):
     firstTime = True
@@ -140,6 +140,10 @@ class UserInterface():
 
         cv2.namedWindow('image')
         cv2.setMouseCallback('image',draw)
+
+        testMetric = Metrics.Object()
+        testMetric.group(list(("image1.jpg", "image2.jpg")))
+
         while(1):
             cv2.imshow('image',inputImage)
             #cv2.imshow('adnotation',img2)
