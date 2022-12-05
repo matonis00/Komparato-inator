@@ -19,18 +19,20 @@ class ColorHistogram(MetricI):
 @dataclass
 class Object(MetricI):
     
-    #def __init__(self):   
-    def group(self, listOfPaths):
+    def __init__(self):
+        
+        print("Utworzono metryke obiektów")
+    #tu bede pisał wykrywanie obiketów
+    def group(self):
         detector = ObjectDetection()
         detector.setModelTypeAsRetinaNet()
-        detector.setModelPath(os.path.abspath("resnet50_coco_best_v2.1.0.h5"))
+        detector.setModelPath(os.path.abspath("C:/Users/Jakub/Desktop/padalec/resnet50_coco_best_v2.1.0.h5"))
         detector.loadModel()
 
-        directoryIn = os.path.abspath("images")
-        directoryOut = os.path.abspath("newImages")
+        directoryIn = os.path.abspath("C:/Users/Jakub/Desktop/padalec/images")
+        directoryOut = os.path.abspath("C:/Users/Jakub/Desktop/padalec/newImages")
 
-        listaStringow = listOfPaths
-        #listaStringow = list(("image1.jpg", "image2.jpg"))
+        listaStringow = list(("image1.jpg", "image2.jpg"))
 
         result = dict()
 
@@ -40,7 +42,7 @@ class Object(MetricI):
             if os.path.isfile(imagePath):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                     detections = detector.detectObjectsFromImage(input_image=imagePath, output_image_path=outputPath, minimum_percentage_probability=60)
-                    #print(imagePath)
+                    print(imagePath)
                     for eachObject in detections:
                         print(eachObject["name"], " : ", eachObject["percentage_probability"])
                         if(result.get(eachObject["name"]) == None):
