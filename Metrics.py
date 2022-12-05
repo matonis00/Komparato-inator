@@ -23,38 +23,37 @@ class Object(MetricI):
         
         print("Utworzono metryke obiektów")
     #tu bede pisał wykrywanie obiketów
-    def group(self):
+    def group(self, listOfPaths):
         detector = ObjectDetection()
         detector.setModelTypeAsRetinaNet()
-        detector.setModelPath(os.path.abspath("C:/Users/Jakub/Desktop/padalec/resnet50_coco_best_v2.1.0.h5"))
+        detector.setModelPath(os.path.abspath("resnet50_coco_best_v2.1.0.h5"))
         detector.loadModel()
 
-        directoryIn = os.path.abspath("C:/Users/Jakub/Desktop/padalec/images")
-        directoryOut = os.path.abspath("C:/Users/Jakub/Desktop/padalec/newImages")
+        directoryOut = os.path.abspath("newImages")
 
-        listaStringow = list(("image1.jpg", "image2.jpg"))
+        listaStringow = listOfPaths
 
         result = dict()
 
         for filename in listaStringow:
-            imagePath = os.path.join(directoryIn, filename)
+            imagePath = os.path.abspath(filename)
             outputPath = os.path.join(directoryOut, filename)
             if os.path.isfile(imagePath):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                     detections = detector.detectObjectsFromImage(input_image=imagePath, output_image_path=outputPath, minimum_percentage_probability=60)
-                    print(imagePath)
+
                     for eachObject in detections:
-                        print(eachObject["name"], " : ", eachObject["percentage_probability"])
-                        if(result.get(eachObject["name"]) == None):
+                        objectName = eachObject["name"]
+
+                        if(result.get(objectName) == None):
                             tempList = list()
                             tempList.append(imagePath)
-                            result.update({eachObject["name"]: tempList})
+                            result.update({objectName: tempList})
                         else:
-                            
-                            listOfItems = result.get(eachObject["name"])
+                            listOfItems = result.get(objectName)
                             if(listOfItems[len(listOfItems)-1]!=imagePath):
                                 listOfItems.append(imagePath)
-                                result.update({eachObject["name"]: listOfItems})
+                                result.update({objectName: listOfItems})
 
         print(result)
 

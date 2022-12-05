@@ -142,7 +142,7 @@ class UserInterface():
         cv2.setMouseCallback('image',draw)
 
         testMetric = Metrics.Object()
-        testMetric.group()
+        testMetric.group(list(("images/GiantCat.png", "images/nowy.jpg")))
 
         while(1):
             cv2.imshow('image',inputImage)
