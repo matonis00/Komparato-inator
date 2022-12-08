@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 import math
 
-from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox
-from PySide6.QtWidgets import QApplication, QVBoxLayout, QLineEdit
-
+#from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
+#from PySide6.QtUiTools import QUiLoader
+#from PySide6.QtCore import QFile, QIODevice, QObject
+from PyQt5.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
+from PyQt5.uic import loadUi
 import numpy as np
 import os
 import sys
@@ -43,23 +45,23 @@ class DialogBox(QDialog):
         
         
 
-@dataclass
-class UserInterface():
-    __Window: bool = True #There shuld be a window object 
-    app = QApplication(sys.argv)
-    DBox = DialogBox()
+class MainUserInterface(QMainWindow):
+
     
-    #def __init__():
-       # app=q
+    def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
+        super(MainUserInterface,self).__init__()
+        loadUi(UIFilePath,self)
+        self.Dbox=DialogBox()
+        self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
+        self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
 
-
-    def show():
-        pass
+    def OnAnnotateBtnClicked(self):
+        self.openImageEditWindow("nowy.jpg")
 
     def openImageEditWindow(self,imagePath:str):
         global inputImage
         global annotationLayer
-
+        textBox=self.Dbox
         if os.path.exists(imagePath)==False:
             return
             
@@ -104,12 +106,12 @@ class UserInterface():
             global annotationLayer
             global ix,iy,InputText
             global isDrawing # true if mouse is pressed
-            
             if event == cv2.EVENT_LBUTTONDOWN:
                 isDrawing = True
                 ix,iy = x,y
                 if textMode == True:
-                    text = UserInterface.DBox.printText()
+                    print("T: "+textBox.printText())
+                    text = textBox.printText()#Public probably TO DO: REWORK
                     cv2.putText(inputImage,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),2)
                     cv2.putText(annotationLayer,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),2)
             elif event == cv2.EVENT_MOUSEMOVE and isDrawing == True:
@@ -139,7 +141,7 @@ class UserInterface():
 
 
         cv2.namedWindow('image')
-        cv2.setMouseCallback('image',draw)
+        cv2.setMouseCallback('image',draw,self.Dbox)
         while(1):
             cv2.imshow('image',inputImage)
             #cv2.imshow('adnotation',img2)
@@ -156,8 +158,9 @@ class UserInterface():
                circleMode= False
                handDrawMode = False
                textMode = True
-               UserInterface.DBox.show()
-               UserInterface.DBox.setGeometry(500,500,200,100) 
+               
+               textBox.show() #Public probably TO DO: REWORK
+               textBox.setGeometry(500,500,200,100) #Public probably TO DO: REWORK
             elif k == ord('b'):#Switch to use borrador
                borradorMode = True
                rectangleMode = False

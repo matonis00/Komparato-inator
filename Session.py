@@ -1,15 +1,16 @@
 from dataclasses import dataclass
 from IO import IO
-from UserInterface import UserInterface
+import UserInterface
 from ImageHandler import ImageHandler
 import numpy as np
 import cv2 
+from PySide6.QtUiTools import QUiLoader
 
 class Session():
 
     def __init__(self):
         self.__isPremium:bool
-        self.userInterface:UserInterface = UserInterface()
+        self.userInterface = UserInterface.MainUserInterface()
         self.handler:ImageHandler = ImageHandler()
         self.InOut:IO=IO()
 
@@ -18,9 +19,17 @@ class Session():
         pass
 
 
-    def getUI(self)->UserInterface:
+    def getUI(self)->UserInterface.MainUserInterface:
         return self.userInterface
 
-imagePath="nowy.jpg"
-sesja = Session()
-sesja.getUI().openImageEditWindow(imagePath)
+def main():
+    app = UserInterface.QApplication(UserInterface.sys.argv)
+    imagePath="nowy.jpg"
+    sesja = Session()
+    sesja.getUI().show()
+
+    UserInterface.sys.exit(app.exec())
+    sesja.getUI()    #sesja.getUI().openImageEditWindow(imagePath)
+
+if __name__=='__main__':
+        main()
