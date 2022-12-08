@@ -1,10 +1,13 @@
 from dataclasses import dataclass
 import math
+from msilib.schema import File
+from typing import List
 
 #from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
 #from PySide6.QtUiTools import QUiLoader
 #from PySide6.QtCore import QFile, QIODevice, QObject
-from PyQt5.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
+from PyQt5.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
+from PyQt5 import QtCore
 from PyQt5.uic import loadUi
 import numpy as np
 import os
@@ -51,9 +54,35 @@ class MainUserInterface(QMainWindow):
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
         loadUi(UIFilePath,self)
+        self.SourcePath = ""
         self.Dbox=DialogBox()
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
+        self.groupBtn = self.findChild(QPushButton,"groupButton")
+        self.browseBtn = self.findChild(QPushButton,"browseButton")
+        self.metricComboBox = self.findChild(QComboBox,"comboBox")
+        self.annotationComboBox = self.findChild(QComboBox,"comboBox_2")
+        self.listView = self.findChild(QListView,"listView")
+        self.graphicView = self.findChild(QGraphicsView,"graphicsView")
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
+        self.groupBtn.clicked.connect(self.OnGroupBtnClicked)
+        self.browseBtn.clicked.connect(self.OnBrowseBtnClicked)
+        self.mylist=QListView()
+        self.mylist.setWindowTitle("ads")
+        self.listView=self.mylist
+
+
+    def OnGroupBtnClicked(self ):
+        pass
+
+
+    def OnBrowseBtnClicked(self ):
+         
+        fileName = QFileDialog.getExistingDirectory(None, 
+                                                         'Select images source', 
+                                                         QtCore.QDir.rootPath(), 
+                                                         QFileDialog.ShowDirsOnly)       
+        self.sourcePath = fileName
+
 
     def OnAnnotateBtnClicked(self):
         self.openImageEditWindow("./images/nowy.jpg")
@@ -112,8 +141,8 @@ class MainUserInterface(QMainWindow):
                 ix,iy = x,y
                 if textMode == True:
                     text = textBox.printText()#Public probably TO DO: REWORK
-                    cv2.putText(inputImage,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),(size/4))
-                    cv2.putText(annotationLayer,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),(size/4))
+                    cv2.putText(inputImage,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),int((size/4)))
+                    cv2.putText(annotationLayer,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),int((size/4)))
             elif event == cv2.EVENT_MOUSEMOVE and isDrawing == True:
                 if handDrawMode == True:
                     cv2.line(annotationLayer,(ix,iy),(x,y),(0,255,0,255),size)
