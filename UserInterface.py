@@ -11,6 +11,7 @@ from PyQt5 import QtCore
 from PyQt5.uic import loadUi
 import numpy as np
 import os
+import glob
 import sys
 import cv2 
 
@@ -77,11 +78,19 @@ class MainUserInterface(QMainWindow):
 
     def OnBrowseBtnClicked(self ):
          
-        fileName = QFileDialog.getExistingDirectory(None, 
+        sourcePath = QFileDialog.getExistingDirectory(None, 
                                                          'Select images source', 
                                                          QtCore.QDir.rootPath(), 
-                                                         QFileDialog.ShowDirsOnly)       
-        self.sourcePath = fileName
+                                                         QFileDialog.ShowDirsOnly)  
+        for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
+            
+       
+            if os.path.isfile(fileName):
+                if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+                    print(fileName)
+            pass
+
+        self.sourcePath = sourcePath
 
 
     def OnAnnotateBtnClicked(self):
