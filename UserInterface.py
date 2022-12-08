@@ -56,9 +56,10 @@ class MainUserInterface(QMainWindow):
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
 
     def OnAnnotateBtnClicked(self):
-        self.openImageEditWindow("nowy.jpg")
+        self.openImageEditWindow("./images/nowy.jpg")
 
     def openImageEditWindow(self,imagePath:str):
+        size=2
         global inputImage
         global annotationLayer
         textBox=self.Dbox
@@ -75,11 +76,11 @@ class MainUserInterface(QMainWindow):
         annotationLayer = np.zeros((inputImage.shape[0],inputImage.shape[1],4), np.uint8)
         dummyImage=inputImage.copy()
         
-        outputImage=imageName+"_annotated.jpg"
+        outputImage=imageName+"_annotated.png"
         outputPath="./Annotations/"+outputImage
         i=1
         while(os.path.exists(outputPath)==True):#if exist add number to name
-            outputImage=imageName+"_annotated_"+str(i)+".jpg"
+            outputImage=imageName+"_annotated_"+str(i)+".png"
             outputPath="./Annotations/"+outputImage
             i+=1
 
@@ -110,31 +111,30 @@ class MainUserInterface(QMainWindow):
                 isDrawing = True
                 ix,iy = x,y
                 if textMode == True:
-                    print("T: "+textBox.printText())
                     text = textBox.printText()#Public probably TO DO: REWORK
-                    cv2.putText(inputImage,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),2)
-                    cv2.putText(annotationLayer,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),2)
+                    cv2.putText(inputImage,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),(size/4))
+                    cv2.putText(annotationLayer,text,(x,y),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0,255),(size/4))
             elif event == cv2.EVENT_MOUSEMOVE and isDrawing == True:
                 if handDrawMode == True:
-                    cv2.line(annotationLayer,(ix,iy),(x,y),(0,255,0,255),2)
-                    cv2.line(inputImage,(ix,iy),(x,y),(0,255,0,0),2)
+                    cv2.line(annotationLayer,(ix,iy),(x,y),(0,255,0,255),size)
+                    cv2.line(inputImage,(ix,iy),(x,y),(0,255,0,0),size)
                     ix,iy = x,y
                 elif borradorMode == True:
-                    cv2.line(annotationLayer,(ix,iy),(x,y),(0,0,0,0),4)
-                    cv2.line(inputImage,(ix,iy),(x,y),(255,255,255,255),4)
+                    cv2.line(annotationLayer,(ix,iy),(x,y),(0,0,0,0),size)
+                    cv2.line(inputImage,(ix,iy),(x,y),(255,255,255,255),size)
                     ix,iy = x,y
 
             elif event == cv2.EVENT_LBUTTONUP:
                 isDrawing = False
                 if rectangleMode == True:
-                    cv2.rectangle(annotationLayer,(ix,iy),(x,y),(0,255,0,255),2)
-                    cv2.rectangle(inputImage,(ix,iy),(x,y),(0,255,0),2)
+                    cv2.rectangle(annotationLayer,(ix,iy),(x,y),(0,255,0,255),size)
+                    cv2.rectangle(inputImage,(ix,iy),(x,y),(0,255,0),size)
                 elif circleMode == True:
                     sx=int((ix+x)/2)
                     sy=int((iy+y)/2)
                     truR=int(math.sqrt(math.pow(ix-x,2)+math.pow(iy-y,2))/2)
-                    cv2.circle(annotationLayer,(sx,sy),truR,(0,0,255,255),2)
-                    cv2.circle(inputImage,(sx,sy),truR,(0,0,255,255),2)
+                    cv2.circle(annotationLayer,(sx,sy),truR,(0,0,255,255),size)
+                    cv2.circle(inputImage,(sx,sy),truR,(0,0,255,255),size)
                 elif borradorMode == True:
                         inputImage=cv2.addWeighted(annotationLayer,1,dummyImage,1,0)#Smth is inherently wrong. I can't pinpoint it though.
                         
@@ -142,16 +142,28 @@ class MainUserInterface(QMainWindow):
 
         cv2.namedWindow('image')
         cv2.setMouseCallback('image',draw,self.Dbox)
+        
         while(1):
             cv2.imshow('image',inputImage)
             #cv2.imshow('adnotation',img2)
             k = cv2.waitKey(1)
-            if k == ord('r'):#Switch to draw rectangle
-                borradorMode = False
-                rectangleMode = True
-                circleMode= False
-                handDrawMode = False
-                textMode = False
+            if k == ord('+'):# increase size
+                size+=1
+                if size>32:
+                    size=32
+            elif k == ord('-'):# decrease size
+                size-=1
+                if size<1:
+                    size=1
+            elif k == ord('t'):#Switch to draw circle
+               borradorMode = False
+               rectangleMode = False
+               circleMode= False
+               handDrawMode = False
+               textMode = True
+               
+               textBox.show() #Public probably TO DO: REWORK
+               textBox.setGeometry(500,500,200,100) #Public probably TO DO: REWORK
             elif k == ord('t'):#Switch to draw circle
                borradorMode = False
                rectangleMode = False

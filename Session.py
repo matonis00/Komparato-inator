@@ -24,7 +24,8 @@ class Session():
 
 def main():
     app = UserInterface.QApplication(UserInterface.sys.argv)
-    imagePath="nowy.jpg"
+   # imagePath="nowy.jpg"
+    imagePath="CatInHalf.jpg"
     sesja = Session()
     sesja.getUI().show()
 
