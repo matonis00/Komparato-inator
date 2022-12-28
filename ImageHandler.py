@@ -3,6 +3,7 @@ from typing import List
 from dataclasses import dataclass
 from Anotation import Anotation
 from Metrics import MetricI
+import os
 
 
 @dataclass
@@ -20,8 +21,9 @@ class ImageHandler():
         pass
 
     #should save results to __paths i suppouse
-    def group(tempList)->dict:
-       return self.metric.group(tempList)
+    def group(self, tempList)->dict:
+        print("dzialamse")
+        return self.metric.group(tempList)
        
 
 

@@ -23,7 +23,7 @@ class Session():
     def getUI(self)->UserInterface.MainUserInterface:
         return self.userInterface
 
-    def groupImages():
+    def groupImages(self ):
         metryka:MetricI = Metrics.Object()
         self.handler.setMetric(metryka)
         print(self.handler.group(self.userInterface.tempList))
