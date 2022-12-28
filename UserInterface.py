@@ -15,7 +15,7 @@ import glob
 import sys
 import cv2 
 
-
+import Metrics
 
 class DialogBox(QDialog):
     firstTime = True
@@ -77,18 +77,24 @@ class MainUserInterface(QMainWindow):
 
 
     def OnBrowseBtnClicked(self ):
-         
+        tempList = list()
         sourcePath = QFileDialog.getExistingDirectory(None, 
                                                          'Select images source', 
                                                          QtCore.QDir.rootPath(), 
                                                          QFileDialog.ShowDirsOnly)  
         for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
             
+            
        
             if os.path.isfile(fileName):
                 if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                     print(fileName)
-            pass
+                    tempList.append(fileName)
+
+
+        metryka = Metrics.Object()
+        result = metryka.group(tempList)
+        print(result)
 
         self.sourcePath = sourcePath
 
