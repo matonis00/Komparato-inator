@@ -8,7 +8,7 @@ import builtins
 @dataclass
 class MetricI():
     
-    def group():
+    def group(self, listOfPaths):
         pass
 
 @dataclass

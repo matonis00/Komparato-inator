@@ -20,8 +20,9 @@ class ImageHandler():
         pass
 
     #should save results to __paths i suppouse
-    def group():
-       pass
+    def group(tempList)->dict:
+       return self.metric.group(tempList)
+       
 
 
     def createAnotation(self,imgPath:str,annotation:str):

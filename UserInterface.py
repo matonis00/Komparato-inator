@@ -50,7 +50,8 @@ class DialogBox(QDialog):
         
 
 class MainUserInterface(QMainWindow):
-
+    tempList = list()
+    resutl= dict()
     
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
@@ -77,7 +78,7 @@ class MainUserInterface(QMainWindow):
 
 
     def OnBrowseBtnClicked(self ):
-        tempList = list()
+        self.tempList = list()
         sourcePath = QFileDialog.getExistingDirectory(None, 
                                                          'Select images source', 
                                                          QtCore.QDir.rootPath(), 
@@ -89,14 +90,14 @@ class MainUserInterface(QMainWindow):
             if os.path.isfile(fileName):
                 if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
                     print(fileName)
-                    tempList.append(fileName)
+                    self.tempList.append(fileName)
 
 
-        metryka = Metrics.Object()
-        result = metryka.group(tempList)
-        print(result)
+        #metryka = Metrics.Object()
+        #result = metryka.group(tempList)
+        #print(result)
 
-        self.sourcePath = sourcePath
+        self.SourcePath = sourcePath
 
 
     def OnAnnotateBtnClicked(self):
