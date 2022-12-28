@@ -28,6 +28,8 @@ def main():
     imagePath="CatInHalf.jpg"
     sesja = Session()
     sesja.getUI().show()
+    
+
 
     UserInterface.sys.exit(app.exec())
     sesja.getUI()    #sesja.getUI().openImageEditWindow(imagePath)
