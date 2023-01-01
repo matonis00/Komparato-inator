@@ -6,8 +6,8 @@ from typing import List
 #from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
 #from PySide6.QtUiTools import QUiLoader
 #from PySide6.QtCore import QFile, QIODevice, QObject
-from PyQt5.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
-from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication,QAbstractItemView, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
+from PyQt5 import QtCore, QtGui
 from PyQt5.uic import loadUi
 import numpy as np
 import os
@@ -52,7 +52,10 @@ class DialogBox(QDialog):
 class MainUserInterface(QMainWindow):
     tempList = list()
     resutl= dict()
-    
+    global ListViewModel, selectedImage
+    selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
+    ListViewModel = QtGui.QStandardItemModel()
+
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
         loadUi(UIFilePath,self)
@@ -64,19 +67,33 @@ class MainUserInterface(QMainWindow):
         self.metricComboBox = self.findChild(QComboBox,"comboBox")
         self.annotationComboBox = self.findChild(QComboBox,"comboBox_2")
         self.listView = self.findChild(QListView,"listView")
+        self.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.graphicView = self.findChild(QGraphicsView,"graphicsView")
+        self.listView.clicked.connect(self.OnItemSelected)
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
-        self.groupBtn.clicked.connect(self.OnGroupBtnClicked)
+        #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
         self.browseBtn.clicked.connect(self.OnBrowseBtnClicked)
-        self.mylist=QListView()
-        self.mylist.setWindowTitle("ads")
-        self.listView=self.mylist
+
+        #QlistView Inicialization
+        self.listView.setModel(ListViewModel)
 
 
-    def OnGroupBtnClicked(self ):
-        pass
+
+    def SetupListView(self, ItemList):
+            
+        for elem in ItemList:
+            item = QtGui.QStandardItem(elem)
+            ListViewModel.appendRow(item)
+
+    #On List View Item Selected
+    def OnItemSelected(self, index):
+        global selectedImage
+        selectedImage = str(index.data())
+        print(selectedImage);
+        #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
 
+    #On Browse Button Clicked
     def OnBrowseBtnClicked(self ):
         self.tempList = list()
         sourcePath = QFileDialog.getExistingDirectory(None, 
@@ -92,7 +109,7 @@ class MainUserInterface(QMainWindow):
                     print(fileName)
                     self.tempList.append(fileName)
 
-
+        self.SetupListView(self.tempList)
         #metryka = Metrics.Object()
         #result = metryka.group(tempList)
         #print(result)
@@ -101,7 +118,10 @@ class MainUserInterface(QMainWindow):
 
 
     def OnAnnotateBtnClicked(self):
-        self.openImageEditWindow("./images/nowy.jpg")
+        print(selectedImage);
+        if selectedImage != "":
+            print(selectedImage);
+            self.openImageEditWindow(selectedImage)
 
     def openImageEditWindow(self,imagePath:str):
         size=2
