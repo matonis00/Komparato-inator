@@ -80,7 +80,8 @@ class MainUserInterface(QMainWindow):
 
 
     def SetupListView(self, ItemList):
-            
+        ListViewModel.clear()
+        
         for elem in ItemList:
             item = QtGui.QStandardItem(elem)
             ListViewModel.appendRow(item)
