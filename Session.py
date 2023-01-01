@@ -4,7 +4,6 @@ import UserInterface
 from ImageHandler import ImageHandler
 import numpy as np
 import cv2 
-from PySide6.QtUiTools import QUiLoader
 import Metrics
 
 class Session():

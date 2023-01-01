@@ -23,7 +23,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QGraphicsView" name="graphicsView">
+  <widget class="QLabel" name="graphicsView">
    <property name="geometry">
     <rect>
      <x>490</x>

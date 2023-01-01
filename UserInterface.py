@@ -6,7 +6,8 @@ from typing import List
 #from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
 #from PySide6.QtUiTools import QUiLoader
 #from PySide6.QtCore import QFile, QIODevice, QObject
-from PyQt5.QtWidgets import QApplication,QAbstractItemView, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
+
+from PyQt5.QtWidgets import QApplication, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
 from PyQt5 import QtCore, QtGui
 from PyQt5.uic import loadUi
 import numpy as np
@@ -56,6 +57,7 @@ class MainUserInterface(QMainWindow):
     selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
     ListViewModel = QtGui.QStandardItemModel()
 
+
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
         loadUi(UIFilePath,self)
@@ -68,7 +70,7 @@ class MainUserInterface(QMainWindow):
         self.annotationComboBox = self.findChild(QComboBox,"comboBox_2")
         self.listView = self.findChild(QListView,"listView")
         self.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.graphicView = self.findChild(QGraphicsView,"graphicsView")
+        self.graphicView = self.findChild(QLabel,"graphicsView")
         self.listView.clicked.connect(self.OnItemSelected)
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
         #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
@@ -86,11 +88,21 @@ class MainUserInterface(QMainWindow):
             item = QtGui.QStandardItem(elem)
             ListViewModel.appendRow(item)
 
+    def SetupGraphicView(self, imagePath):
+        pixmap = QtGui.QPixmap(imagePath)
+        #TODO:
+        #ImageWidthLabel = pixmap.width() #I want to print real size
+        #ImageHeightLabel pixmap.height() #Need some small labels in UI
+        pixmap = pixmap.scaled(471,471)
+        self.graphicView.setPixmap(pixmap)
+
+
     #On List View Item Selected
     def OnItemSelected(self, index):
         global selectedImage
         selectedImage = str(index.data())
-        print(selectedImage);
+        self.SetupGraphicView(selectedImage)
+
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
 
