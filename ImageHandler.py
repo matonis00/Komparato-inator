@@ -24,8 +24,7 @@ class ImageHandler():
     def group(self, tempList)->dict:
         print("dzialamse")
         return self.metric.group(tempList)
-       
-
+    
 
     def createAnotation(self,imgPath:str,annotation:str):
         self.__annotations.append(Anotation(imgPath,annotation))

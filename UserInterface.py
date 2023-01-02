@@ -61,7 +61,7 @@ class MainUserInterface(QMainWindow):
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
         loadUi(UIFilePath,self)
-        self.SourcePath = ""
+        self.sourcePath = ""
         self.Dbox=DialogBox()
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
         self.groupBtn = self.findChild(QPushButton,"groupButton")
@@ -75,6 +75,7 @@ class MainUserInterface(QMainWindow):
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
         #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
         self.browseBtn.clicked.connect(self.OnBrowseBtnClicked)
+        self.contentList = list()
 
         #QlistView Inicialization
         self.listView.setModel(ListViewModel)
@@ -83,9 +84,9 @@ class MainUserInterface(QMainWindow):
 
     def SetupListView(self, ItemList):
         ListViewModel.clear()
-        
+        self.contentList = ItemList
         for elem in ItemList:
-            item = QtGui.QStandardItem(elem)
+            item = QtGui.QStandardItem(os.path.basename(elem))
             ListViewModel.appendRow(item)
 
     def SetupGraphicView(self, imagePath):
@@ -100,34 +101,37 @@ class MainUserInterface(QMainWindow):
     #On List View Item Selected
     def OnItemSelected(self, index):
         global selectedImage
-        selectedImage = str(index.data())
-        self.SetupGraphicView(selectedImage)
+        if self.contentList[index.row()].lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+            selectedImage = str(self.contentList[index.row()])
+            self.SetupGraphicView(selectedImage)
 
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
+    def GetSource(self):
+        self.sourcePath = QFileDialog.getExistingDirectory(None, 
+                                                        'Select images source', 
+                                                         QtCore.QDir.rootPath(), 
+                                                         QFileDialog.ShowDirsOnly)
 
     #On Browse Button Clicked
     def OnBrowseBtnClicked(self ):
-        self.tempList = list()
-        sourcePath = QFileDialog.getExistingDirectory(None, 
-                                                         'Select images source', 
-                                                         QtCore.QDir.rootPath(), 
-                                                         QFileDialog.ShowDirsOnly)  
-        for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
-            
-            
-       
-            if os.path.isfile(fileName):
-                if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-                    print(fileName)
-                    self.tempList.append(fileName)
+       # self.tempList = list()
+        #self.sourcePath = QFileDialog.getExistingDirectory(None, 
+           #                                              'Select images source', 
+          #                                               QtCore.QDir.rootPath(), 
+         #                                                QFileDialog.ShowDirsOnly)  
+        #for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
+        #    if os.path.isfile(fileName):
+        #        if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
+        #            print(fileName)
+        #            self.tempList.append(fileName)
 
-        self.SetupListView(self.tempList)
+        #self.SetupListView(self.tempList)
         #metryka = Metrics.Object()
         #result = metryka.group(tempList)
-        #print(result)
+        print("result")
 
-        self.SourcePath = sourcePath
+        #self.SourcePath = sourcePath
 
 
     def OnAnnotateBtnClicked(self):

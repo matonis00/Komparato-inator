@@ -23,7 +23,7 @@ class Object(MetricI):
         
         print("Utworzono metryke obiektów")
     
-    def group(self, listOfPaths):
+    def group(self, listOfPaths)->dict:
         detector = ObjectDetection()
         detector.setModelTypeAsRetinaNet()
         detector.setModelPath(os.path.abspath("resnet50_coco_best_v2.1.0.h5"))
@@ -53,8 +53,8 @@ class Object(MetricI):
                     if(listOfItems[len(listOfItems)-1]!=imagePath):
                         listOfItems.append(imagePath)
                         result.update({objectName: listOfItems})
-
         print(result)
+        return result
 
 
 
