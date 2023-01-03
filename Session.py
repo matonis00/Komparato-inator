@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import List
 from Annotation import Annotation
 from IO import IO
@@ -77,9 +76,13 @@ class Session():
 
 def main():
     app = UserInterface.QApplication(UserInterface.sys.argv)
+   # imagePath="nowy.jpg"
+    imagePath="CatInHalf.jpg"
     sesja = Session()
     sesja.getUI().show()
     
+
+
     UserInterface.sys.exit(app.exec())
     sesja.getUI()    #sesja.getUI().openImageEditWindow(imagePath)
 
