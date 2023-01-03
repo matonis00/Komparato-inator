@@ -23,7 +23,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Anotation.py" />
+    <Compile Include="Annotation.py" />
     <Compile Include="ImageHandler.py" />
     <Compile Include="ImageSorter.py" />
     <Compile Include="IO.py" />

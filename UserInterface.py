@@ -1,7 +1,4 @@
-from dataclasses import dataclass
 import math
-from msilib.schema import File
-from typing import List
 
 #from PySide6.QtWidgets import QApplication, QDialog , QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton
 #from PySide6.QtUiTools import QUiLoader
@@ -20,8 +17,9 @@ import Metrics
 
 class DialogBox(QDialog):
     firstTime = True
-
+    
     def __init__(self, parent=None):
+        
         self.text=""
         super(DialogBox, self).__init__()
         self.lineInput = QLineEdit()
@@ -53,14 +51,15 @@ class DialogBox(QDialog):
 class MainUserInterface(QMainWindow):
     tempList = list()
     resutl= dict()
-    global ListViewModel, selectedImage
-    selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
+    saveAnnotationSignal = QtCore.pyqtSignal(str)
+    global ListViewModel
     ListViewModel = QtGui.QStandardItemModel()
 
 
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
         loadUi(UIFilePath,self)
+        self.selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
         self.sourcePath = ""
         self.Dbox=DialogBox()
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
@@ -79,8 +78,15 @@ class MainUserInterface(QMainWindow):
 
         #QlistView Inicialization
         self.listView.setModel(ListViewModel)
+        #Image visualization Inicialization
+        size = QtCore.QSize(471.0,471.0)
+        whiteColor = QtGui.QColor(255,255,255)
+        whitePixmap = QtGui.QPixmap(size)
+        whitePixmap.fill(whiteColor)
+        self.graphicView.setPixmap(whitePixmap)
+       
 
-
+        
 
     def SetupListView(self, ItemList):
         ListViewModel.clear()
@@ -100,10 +106,9 @@ class MainUserInterface(QMainWindow):
 
     #On List View Item Selected
     def OnItemSelected(self, index):
-        global selectedImage
         if self.contentList[index.row()].lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-            selectedImage = str(self.contentList[index.row()])
-            self.SetupGraphicView(selectedImage)
+            self.selectedImage = str(self.contentList[index.row()])
+            self.SetupGraphicView(self.selectedImage)
 
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
@@ -135,10 +140,10 @@ class MainUserInterface(QMainWindow):
 
 
     def OnAnnotateBtnClicked(self):
-        print(selectedImage);
-        if selectedImage != "":
-            print(selectedImage);
-            self.openImageEditWindow(selectedImage)
+        if self.selectedImage != "":
+            self.annotateBtn.setEnabled(False)
+            self.openImageEditWindow(self.selectedImage)
+           
 
     def openImageEditWindow(self,imagePath:str):
         size=2
@@ -218,7 +223,7 @@ class MainUserInterface(QMainWindow):
                     cv2.circle(annotationLayer,(sx,sy),truR,(0,0,255,255),size)
                     cv2.circle(inputImage,(sx,sy),truR,(0,0,255,255),size)
                 elif borradorMode == True:
-                        inputImage=cv2.addWeighted(annotationLayer,1,dummyImage,1,0)#Smth is inherently wrong. I can't pinpoint it though.
+                    inputImage=cv2.addWeighted(annotationLayer,1,dummyImage,1,0) #Smth is inherently wrong. I can't pinpoint it though.
                         
 
 
@@ -274,14 +279,15 @@ class MainUserInterface(QMainWindow):
                handDrawMode = True
                textMode = False
             elif k == ord('s'):#saves edits in annotation
-               cv2.imwrite(outputPath,annotationLayer)
-               cv2.imwrite("./cat.png",inputImage)
+               cv2.imwrite(outputPath,annotationLayer)  
+               self.saveAnnotationSignal.emit(outputPath)
+               #cv2.imwrite("./cat.png",inputImage)
             elif k == ord('c'):#Clears with dummy image
                inputImage=dummyImage.copy()
                annotationLayer = np.zeros((inputImage.shape[0],inputImage.shape[1],4), np.uint8)
             elif k == 27:#ESC
                break
-            
+        self.annotateBtn.setEnabled(True)
         cv2.destroyAllWindows()   
 
         

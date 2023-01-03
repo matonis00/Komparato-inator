@@ -1,6 +1,9 @@
-from dataclasses import dataclass
+from __future__ import annotations
+from typing import List
+from Annotation import Annotation
 from IO import IO
 import UserInterface
+import Metrics
 from ImageHandler import ImageHandler
 import numpy as np
 import cv2 
@@ -15,6 +18,26 @@ class Session():
         self.InOut:IO=IO()
         self.userInterface.groupBtn.clicked.connect(self.groupImages)
         self.userInterface.browseBtn.clicked.connect(self.loadPaths)
+        self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
+        self.annotationList:List[Annotation] = self.InOut.loadAnnotations()
+        self.InOut.saveAnnotations(self.annotationList)
+
+
+
+
+
+    def userSavedAnnotation(self, outputPath:str):
+        for annotation in self.annotationList:
+            if(annotation.imagePath == self.userInterface.selectedImage):
+                for path in annotation.content:
+                    if(path==outputPath):
+                        break
+                annotation.content.append(outputPath)
+                self.InOut.saveAnnotations(self.annotationList)
+                break
+        self.annotationList.append(Annotation(self.userInterface.selectedImage, [outputPath]))
+        self.InOut.saveAnnotations(self.annotationList)
+
 
     def __validateKey(self,key) -> bool:
         pass
@@ -35,7 +58,7 @@ class Session():
         return self.userInterface
 
     def groupImages(self ):
-        metryka:MetricI = Metrics.Object()
+        metryka:Metrics.MetricI = Metrics.Object()
         self.handler.setMetric(metryka)
 
         dictonary = dict()
@@ -43,7 +66,7 @@ class Session():
         listP = list()
 
         for key in dictonary.keys():
-            listP.append(key)
+            listP.append("########"+key+"########")
             listP = listP + dictonary[key]
 
         self.userInterface.SetupListView(listP)
@@ -51,13 +74,9 @@ class Session():
 
 def main():
     app = UserInterface.QApplication(UserInterface.sys.argv)
-   # imagePath="nowy.jpg"
-    imagePath="CatInHalf.jpg"
     sesja = Session()
     sesja.getUI().show()
     
-
-
     UserInterface.sys.exit(app.exec())
     sesja.getUI()    #sesja.getUI().openImageEditWindow(imagePath)
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
 from dataclasses import dataclass
-from Anotation import Anotation
+from Annotation import Annotation
 from Metrics import MetricI
 import os
 
@@ -9,7 +9,7 @@ import os
 @dataclass
 class ImageHandler():
     __paths:List[str] 
-    __annotations:List[Anotation]
+    __annotations:List[Annotation]
     metric:MetricI
 
 
@@ -27,7 +27,7 @@ class ImageHandler():
     
 
     def createAnotation(self,imgPath:str,annotation:str):
-        self.__annotations.append(Anotation(imgPath,annotation))
+        self.__annotations.append(Annotation(imgPath,annotation))
 
 
     def removeAnotation(self,annotationId:int):

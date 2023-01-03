@@ -1,15 +1,14 @@
 from typing import List
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
-class Anotation():
-    imagePath:str
-    annotationParams:List[str]
-
-    def __init__(self,imagePath,content):
-        self.imagePath=imagePath
-        self.content.append(content)
+class Annotation():
+    def __init__(self,imagePath, params:List[str]):
+        self.content=[]
+        self.imagePath = imagePath
+        for param in params:
+            self.content.append(param)
 
 
     def addParam(self,contentString:str)->bool:
@@ -25,5 +24,4 @@ class Anotation():
     def removeParam(self,contentId:int)->bool:
         self.content.pop(contentId)
         return True
-
 
