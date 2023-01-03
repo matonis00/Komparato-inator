@@ -27,16 +27,19 @@ class Session():
 
 
     def userSavedAnnotation(self, outputPath:str):
+        saved = False
         for annotation in self.annotationList:
             if(annotation.imagePath == self.userInterface.selectedImage):
                 for path in annotation.content:
                     if(path==outputPath):
                         break
                 annotation.content.append(outputPath)
+                saved = True
                 self.InOut.saveAnnotations(self.annotationList)
                 break
-        self.annotationList.append(Annotation(self.userInterface.selectedImage, [outputPath]))
-        self.InOut.saveAnnotations(self.annotationList)
+        if(saved == False):
+            self.annotationList.append(Annotation(self.userInterface.selectedImage, [outputPath]))
+            self.InOut.saveAnnotations(self.annotationList)
 
 
     def __validateKey(self,key) -> bool:
