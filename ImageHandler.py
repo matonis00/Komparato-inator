@@ -54,19 +54,16 @@ class ImageHandler():
                 return packetStr
         return packetStr
 
-
-
-                
-    
-
-
     def userSavedAnnotation(self, outputPath:str, selectedImage:str)->List[Annotation]:
+        found = False
         for annotation in self.__annotations:
             if(annotation.imagePath == selectedImage):
                 for path in annotation.content:
                     if(path==outputPath):
+                        found = True
                         break
-                annotation.content.append(outputPath)
+                if(found == False):
+                   annotation.content.append(outputPath)
                 return self.__annotations
         self.createAnnotationFromScratch(selectedImage,[outputPath])
         return self.__annotations
