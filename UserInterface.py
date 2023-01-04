@@ -118,18 +118,20 @@ class MainUserInterface(QMainWindow):
         self.annotationComboBox.setCurrentIndex(0)
 
     def SetupGraphicViewWithAnnotation(self, baseImagePath:str, annotationPath:str):
-
-        if(annotationPath !=""):
-            baseImage = Image.open(baseImagePath)
-            annotation = Image.open(annotationPath)
-            mode1 = baseImage.mode
-            if(str(mode1) == "RGB"):
-                baseImage = baseImage.convert("RGBA")
-            baseImage.alpha_composite(annotation)
-            pixmap=ImageQt.toqpixmap(baseImage)
-            self.graphicView.setPixmap(pixmap.scaled(471,471))
-        else:
-            self.SetupGraphicView(baseImagePath)
+        try:
+            if(annotationPath !=""):
+                baseImage = Image.open(baseImagePath)
+                annotation = Image.open(annotationPath)
+                mode1 = baseImage.mode
+                if(str(mode1) == "RGB"):
+                    baseImage = baseImage.convert("RGBA")
+                baseImage.alpha_composite(annotation)
+                pixmap=ImageQt.toqpixmap(baseImage)
+                self.graphicView.setPixmap(pixmap.scaled(471,471))
+            else:
+                self.SetupGraphicView(baseImagePath)
+        except:
+             self.SetupGraphicView(baseImagePath)
 
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
