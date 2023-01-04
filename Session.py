@@ -13,32 +13,31 @@ class Session():
     def __init__(self):
         self.__isPremium:bool
         self.userInterface = UserInterface.MainUserInterface()
-        self.handler:ImageHandler = ImageHandler()
         self.InOut:IO=IO()
+        self.handler:ImageHandler = ImageHandler([],[],Metrics.MetricI())
         self.userInterface.groupBtn.clicked.connect(self.groupImages)
         self.userInterface.browseBtn.clicked.connect(self.loadPaths)
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
-        self.annotationList:List[Annotation] = self.InOut.loadAnnotations()
-        self.InOut.saveAnnotations(self.annotationList)
+        self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
+        #self.annotationList:List[Annotation] = self.InOut.loadAnnotations()
+        self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
 
 
 
+
+    def userSelectedItem(self, imagePath):
+        #pathList = []
+        #nameList = []
+        #for annotation in self.annotationList:
+        #    if(annotation.imagePath == self.userInterface.selectedImage):
+               pass
 
 
     def userSavedAnnotation(self, outputPath:str):
-        saved = False
-        for annotation in self.annotationList:
-            if(annotation.imagePath == self.userInterface.selectedImage):
-                for path in annotation.content:
-                    if(path==outputPath):
-                        break
-                annotation.content.append(outputPath)
-                saved = True
-                self.InOut.saveAnnotations(self.annotationList)
-                break
-        if(saved == False):
-            self.annotationList.append(Annotation(self.userInterface.selectedImage, [outputPath]))
-            self.InOut.saveAnnotations(self.annotationList)
+        newList = self.handler.userSavedAnnotation(outputPath ,self.userInterface.selectedImage)
+        if(newList.__len__ != 0):
+            self.InOut.saveAnnotations(newList)    
+            
 
 
     def __validateKey(self,key) -> bool:

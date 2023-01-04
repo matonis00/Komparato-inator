@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import List
 from dataclasses import dataclass
 from Annotation import Annotation
@@ -13,9 +12,6 @@ class ImageHandler():
     metric:MetricI
 
 
-    def __init__(self):
-        pass
-
 
     def scan():
         pass
@@ -25,9 +21,32 @@ class ImageHandler():
         print("dzialamse")
         return self.metric.group(tempList)
     
+    def getAnnotationsList(self)->List[Annotation]:
+        return self.__annotations
 
-    def createAnotation(self,imgPath:str,annotation:str):
-        self.__annotations.append(Annotation(imgPath,annotation))
+    def createAnnotationFromScratch(self, imgPath:str, annotationList:List[str]):
+        self.__annotations.append(Annotation(imgPath,annotationList))
+    
+
+    def createAnnotation(self,annotation:Annotation):
+        self.__annotations.append(annotation)
+
+
+    def loadAnnotationsFromConf(self, annotationsList:List[Annotation]):
+        for annotation in annotationsList:
+            self.createAnnotation(annotation)
+
+
+    def userSavedAnnotation(self, outputPath:str, selectedImage:str)->List[Annotation]:
+        for annotation in self.__annotations:
+            if(annotation.imagePath == selectedImage):
+                for path in annotation.content:
+                    if(path==outputPath):
+                        break
+                annotation.content.append(outputPath)
+                return self.__annotations
+        self.createAnnotationFromScratch(selectedImage,[outputPath])
+        return self.__annotations
 
 
     def removeAnotation(self,annotationId:int):

@@ -7,6 +7,7 @@ import math
 from PyQt5.QtWidgets import QApplication, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
 from PyQt5 import QtCore, QtGui
 from PyQt5.uic import loadUi
+from typing import List
 import numpy as np
 import os
 import glob
@@ -52,6 +53,7 @@ class MainUserInterface(QMainWindow):
     tempList = list()
     resutl= dict()
     saveAnnotationSignal = QtCore.pyqtSignal(str)
+    onSelectItemSignal = QtCore.pyqtSignal(str)
     global ListViewModel
     ListViewModel = QtGui.QStandardItemModel()
 
@@ -108,7 +110,13 @@ class MainUserInterface(QMainWindow):
     def OnItemSelected(self, index):
         if self.contentList[index.row()].lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
             self.selectedImage = str(self.contentList[index.row()])
+            self.onSelectItemSignal.emit(self.selectedImage)
             self.SetupGraphicView(self.selectedImage)
+
+    def LoadImageAnnotations(self, paths:List[str]):
+        for path in paths:
+            print(path)
+
 
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
