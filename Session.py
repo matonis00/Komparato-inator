@@ -19,24 +19,29 @@ class Session():
         self.userInterface.browseBtn.clicked.connect(self.loadPaths)
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
-        #self.annotationList:List[Annotation] = self.InOut.loadAnnotations()
+        self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
         self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
 
 
 
 
-    def userSelectedItem(self, imagePath):
-        #pathList = []
-        #nameList = []
-        #for annotation in self.annotationList:
-        #    if(annotation.imagePath == self.userInterface.selectedImage):
-               pass
+    def onAnnotationComboBoxChanged(self, index):
+        imagePath = self.userInterface.selectedImage
+        if(index > 0):
+            annotationPath = self.handler.getPathAt(index)
+        else:
+            annotationPath=""
+        self.userInterface.SetupGraphicViewWithAnnotation(imagePath, annotationPath)
 
+
+    def userSelectedItem(self, imagePath):
+        self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(imagePath))
 
     def userSavedAnnotation(self, outputPath:str):
         newList = self.handler.userSavedAnnotation(outputPath ,self.userInterface.selectedImage)
-        if(newList.__len__ != 0):
+        if(newList.__len__ != 0):   
             self.InOut.saveAnnotations(newList)    
+            self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(self.userInterface.selectedImage))
             
 
 

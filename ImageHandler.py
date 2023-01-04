@@ -18,7 +18,6 @@ class ImageHandler():
 
     #should save results to __paths i suppouse
     def group(self, tempList)->dict:
-        print("dzialamse")
         return self.metric.group(tempList)
     
     def getAnnotationsList(self)->List[Annotation]:
@@ -35,6 +34,30 @@ class ImageHandler():
     def loadAnnotationsFromConf(self, annotationsList:List[Annotation]):
         for annotation in annotationsList:
             self.createAnnotation(annotation)
+
+
+    def userSelectedItem(self, imagePath)->List[str]:
+        return self.findEntries(imagePath)
+
+    def getPathAt(self, index:int)->str:
+        return self.__paths[index]
+
+
+    def findEntries(self, imagePath)->List[str]:
+        packetStr = [os.path.basename(imagePath)]
+        self.__paths = [imagePath]
+        for annotation in self.__annotations:
+            if(annotation.imagePath == imagePath):
+                for path in annotation.content:
+                    packetStr += [os.path.basename(path)]
+                self.__paths+=annotation.content
+                return packetStr
+        return packetStr
+
+
+
+                
+    
 
 
     def userSavedAnnotation(self, outputPath:str, selectedImage:str)->List[Annotation]:
