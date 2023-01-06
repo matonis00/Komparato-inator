@@ -29,6 +29,9 @@
     <Compile Include="IO.py" />
     <Compile Include="Metrics.py" />
     <Compile Include="Session.py" />
+    <Compile Include="test_Metrics.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UserInterface.py" />
   </ItemGroup>
   <ItemGroup>
