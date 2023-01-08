@@ -69,6 +69,7 @@ class MainUserInterface(QMainWindow):
         self.listView = self.findChild(QListView,"listView")
         self.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.graphicView = self.findChild(QLabel,"graphicsView")
+        self.sizeLabel = self.findChild(QLabel,"sizeLabel")
         self.listView.clicked.connect(self.OnItemSelected)
         self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
         #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
@@ -96,10 +97,10 @@ class MainUserInterface(QMainWindow):
 
     def SetupGraphicView(self, imagePath):
         pixmap = QtGui.QPixmap(imagePath)
-        #TODO:
-        #ImageWidthLabel = pixmap.width() #I want to print real size
-        #ImageHeightLabel pixmap.height() #Need some small labels in UI
+        imageWidth = pixmap.width() 
+        imageHeight = pixmap.height()
         pixmap = pixmap.scaled(471,471)
+        self.sizeLabel.setText(str(imageWidth)+"/"+str(imageHeight)+"px")
         self.graphicView.setPixmap(pixmap)
 
 
@@ -127,6 +128,9 @@ class MainUserInterface(QMainWindow):
                     baseImage = baseImage.convert("RGBA")
                 baseImage.alpha_composite(annotation)
                 pixmap=ImageQt.toqpixmap(baseImage)
+                imageWidth = pixmap.width() 
+                imageHeight = pixmap.height()
+                self.sizeLabel.setText(str(imageWidth)+"/"+str(imageHeight)+"px")
                 self.graphicView.setPixmap(pixmap.scaled(471,471))
             else:
                 self.SetupGraphicView(baseImagePath)
