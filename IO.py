@@ -2,6 +2,7 @@ from typing import  List
 import glob
 import os
 from Annotation import Annotation
+from PyQt5.QtGui import QPixmap
 
 class IO():
     def __init__(self):
@@ -52,6 +53,9 @@ class IO():
 
     def findEntry(entry:str)->bool:
         pass
+    def exportImage(self, pixmap:QPixmap, format:str)->bool:
+        pixmap.save(format);
+        return True
 
     def readPath(self,sourcePath)->list:
         tempList = list()

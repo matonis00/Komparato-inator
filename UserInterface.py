@@ -1,7 +1,8 @@
 from __future__ import annotations
 import math
+import string
 from PIL import Image, ImageQt
-from PyQt5.QtWidgets import QApplication, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
+from PyQt5.QtWidgets import QApplication,QMessageBox, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
 from PyQt5 import QtCore, QtGui
 from PyQt5.uic import loadUi
 from typing import List
@@ -64,6 +65,7 @@ class MainUserInterface(QMainWindow):
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
         self.groupBtn = self.findChild(QPushButton,"groupButton")
         self.browseBtn = self.findChild(QPushButton,"browseButton")
+        self.exportBtn = self.findChild(QPushButton,"pushButton")
         self.metricComboBox = self.findChild(QComboBox,"comboBox")
         self.annotationComboBox = self.findChild(QComboBox,"comboBox_2")
         self.listView = self.findChild(QListView,"listView")
@@ -139,11 +141,27 @@ class MainUserInterface(QMainWindow):
 
         #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
 
-    def GetSource(self):
-        self.sourcePath = QFileDialog.getExistingDirectory(None, 
-                                                        'Select images source', 
-                                                         QtCore.QDir.rootPath(), 
-                                                         QFileDialog.ShowDirsOnly)
+    def getPath(self,title:str):
+        tempstr =  QFileDialog.getExistingDirectory(None, 
+                                                      title, 
+                                                       QtCore.QDir.rootPath(), 
+                                                       QFileDialog.ShowDirsOnly)
+        return tempstr
+        
+
+    def getSavePath(self)->str:
+        filepath, _ =QFileDialog.getSaveFileName(filter="Image (*.png);;Image (*.jpg)")
+        return filepath
+      
+    def showMessageBox(self,text:str):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText(text)
+        msg.setWindowTitle("Information")
+        msg.setStandardButtons(QMessageBox.Ok) 
+        msg.setDefaultButton(QMessageBox.Ok)
+        msg.exec_()
+
 
     #On Browse Button Clicked
     def OnBrowseBtnClicked(self ):
@@ -191,11 +209,11 @@ class MainUserInterface(QMainWindow):
         dummyImage=inputImage.copy()
         
         outputImage=imageName+"_annotated.png"
-        outputPath="./Annotations/"+outputImage
+        outputPath=".\\Annotations\\"+outputImage
         i=1
         while(os.path.exists(outputPath)==True):#if exist add number to name
             outputImage=imageName+"_annotated_"+str(i)+".png"
-            outputPath="./Annotations/"+outputImage
+            outputPath=".\\Annotations\\"+outputImage
             i+=1
 
         handDrawMode = False # true if hand drawing mode is on

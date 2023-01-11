@@ -1,3 +1,4 @@
+from pickle import NONE
 from typing import List
 from Annotation import Annotation
 from IO import IO
@@ -17,6 +18,7 @@ class Session():
         self.handler:ImageHandler = ImageHandler([],[],Metrics.MetricI())
         self.userInterface.groupBtn.clicked.connect(self.groupImages)
         self.userInterface.browseBtn.clicked.connect(self.loadPaths)
+        self.userInterface.exportBtn.clicked.connect(self.selectExportPath)
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
         self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
@@ -49,15 +51,24 @@ class Session():
         pass
 
     def loadPaths(self):
-        self.userInterface.GetSource()
-        
-        #for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
-        #    if os.path.isfile(fileName):
-        #        if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-        #            print(fileName)
-        #            self.tempList.append(fileName)
+        path = self.userInterface.getPath("Select source path")
+        if(path!="" and path): 
+            self.userInterface.sourcePath = path.replace('/',"\\")
+            self.userInterface.SetupListView(self.InOut.readPath(self.userInterface.sourcePath))
+        else:
+            self.userInterface.showMessageBox("Select Proper folder")
 
-        self.userInterface.SetupListView(self.InOut.readPath(self.userInterface.sourcePath))
+
+    def selectExportPath(self):
+        if(self.userInterface.selectedImage!=""):
+            exportPath = self.userInterface.getSavePath();
+            if(exportPath!=""):
+                pixmap = self.userInterface.graphicView.pixmap()
+                self.InOut.exportImage(pixmap,exportPath)
+                
+        else:
+            self.userInterface.showMessageBox("Select any picture")
+        
 
 
     def getUI(self)->UserInterface.MainUserInterface:
