@@ -2,6 +2,7 @@ from typing import  List
 import glob
 import os
 from Annotation import Annotation
+from ResultSet import ResultSet
 from PyQt5.QtGui import QPixmap
 
 class IO():
@@ -45,11 +46,16 @@ class IO():
                 plik.write("}\n")    
             plik.close()
 
-    def loadResult():
+    def loadResult()->List[ResultSet]:#placeholder for ResultSet  #TODO
+        #need to create ResultSet
+        #need to coolect List[ResultSet] In image Handler
+        #need to first load it into path
         pass
 
-    def saveResult():
-        pass
+    def saveResult(self, set:List[ResultSet]):##TODO redo it same as annotations
+        plik = open("config/SavedResults.conf", "a")
+         
+        plik.close()
 
     def findEntry(entry:str)->bool:
         pass
@@ -66,7 +72,3 @@ class IO():
                     #if fileName not in tempList:
                     tempList.append(fileName)
         return tempList
-
-
-
-

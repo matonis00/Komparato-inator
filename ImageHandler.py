@@ -1,6 +1,7 @@
 from typing import List
 from dataclasses import dataclass
 from Annotation import Annotation
+from ResultSet import ResultSet
 from Metrics import MetricI
 import os
 
@@ -9,6 +10,7 @@ import os
 class ImageHandler():
     __paths:List[str] 
     __annotations:List[Annotation]
+    __ResultSets:List[ResultSet]
     metric:MetricI
 
 
@@ -53,6 +55,23 @@ class ImageHandler():
                 self.__paths+=annotation.content
                 return packetStr
         return packetStr
+
+    def saveResultSet():#TODO
+        pass
+
+    def findResultSet():#TODO
+        pass
+
+    def findImageInResultSet():#TODO
+        pass
+
+    def addImageToResutSet():#TODO
+        pass
+
+    def removeImageFromResultSet():#TODO
+        pass
+
+
 
     def userSavedAnnotation(self, outputPath:str, selectedImage:str)->List[Annotation]:
         found = False

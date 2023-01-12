@@ -3,10 +3,18 @@ import os
 import glob
 import builtins
 
+from typing import List
+
 
 class MetricI():
     
-    def group(self, listOfPaths):
+    def __init__(self):
+        self.metricName=""
+        self.listOfPaths=[]
+        self.metricName=""
+
+
+    def group(self, listOfPaths:List[str]):
         pass
 
 class ColorHistogram(MetricI):
@@ -16,7 +24,7 @@ class ColorHistogram(MetricI):
 class Object(MetricI):
     
     def __init__(self):
-        
+        self.metricName="Object"
         print("Utworzono metryke obiektów")
     
     def group(self, listOfPaths)->dict:

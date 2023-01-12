@@ -15,7 +15,7 @@ class Session():
         self.__isPremium:bool
         self.userInterface = UserInterface.MainUserInterface()
         self.InOut:IO=IO()
-        self.handler:ImageHandler = ImageHandler([],[],Metrics.MetricI())
+        self.handler:ImageHandler = ImageHandler([],[],[],Metrics.MetricI())
         self.userInterface.groupBtn.clicked.connect(self.groupImages)
         self.userInterface.browseBtn.clicked.connect(self.loadPaths)
         self.userInterface.exportBtn.clicked.connect(self.selectExportPath)
@@ -85,7 +85,7 @@ class Session():
         for key in dictonary.keys():
             listP.append("########"+key+"########")
             listP = listP + dictonary[key]
-
+        self.InOut.saveResult(metryka.metricName,self.userInterface.contentList)
         self.userInterface.SetupListView(listP)
         #self.userInterface.resutl = self.handler.group(self.userInterface.tempList)
 

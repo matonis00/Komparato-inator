@@ -61,6 +61,7 @@ class MainUserInterface(QMainWindow):
         self.selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
         self.sourcePath = ""
         self.imageChoosen = False
+        self.folderChoosen = False
         self.Dbox=DialogBox()
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
         self.groupBtn = self.findChild(QPushButton,"groupButton")
@@ -121,7 +122,6 @@ class MainUserInterface(QMainWindow):
             if(self.imageChoosen == False):
                 self.annotateBtn.setEnabled(True)
                 self.exportBtn.setEnabled(True)
-                self.groupBtn.setEnabled(True)
                 self.imageChoosen = True
 
 
@@ -177,7 +177,9 @@ class MainUserInterface(QMainWindow):
 
     #On Browse Button Clicked
     def OnBrowseBtnClicked(self ):
-       pass
+             if(self.folderChoosen == False):
+                self.groupBtn.setEnabled(True)
+                self.folderChoosen = True
 
 
     def OnAnnotateBtnClicked(self):
