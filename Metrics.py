@@ -1,22 +1,18 @@
-from dataclasses import dataclass
 from imageai.Detection import ObjectDetection
 import os
 import glob
 import builtins
 
 
-@dataclass
 class MetricI():
     
     def group(self, listOfPaths):
         pass
 
-@dataclass
 class ColorHistogram(MetricI):
     pass
 
 
-@dataclass
 class Object(MetricI):
     
     def __init__(self):
@@ -58,7 +54,7 @@ class Object(MetricI):
 
 
 
-@dataclass
+
 class Identity(MetricI):
     pass
 

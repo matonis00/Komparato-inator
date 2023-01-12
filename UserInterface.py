@@ -11,7 +11,6 @@ import os
 import glob
 import sys
 import cv2 
-
 import Metrics
 
 class DialogBox(QDialog):
@@ -61,6 +60,7 @@ class MainUserInterface(QMainWindow):
         loadUi(UIFilePath,self)
         self.selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
         self.sourcePath = ""
+        self.imageChoosen = False
         self.Dbox=DialogBox()
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
         self.groupBtn = self.findChild(QPushButton,"groupButton")
@@ -77,6 +77,12 @@ class MainUserInterface(QMainWindow):
         #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
         self.browseBtn.clicked.connect(self.OnBrowseBtnClicked)
         self.contentList = list()
+
+
+        #buttons setup
+        self.annotateBtn.setEnabled(False)
+        self.exportBtn.setEnabled(False)
+        self.groupBtn.setEnabled(False)
 
         #QlistView Inicialization
         self.listView.setModel(ListViewModel)
@@ -112,6 +118,12 @@ class MainUserInterface(QMainWindow):
             self.selectedImage = str(self.contentList[index.row()])
             self.onSelectItemSignal.emit(self.selectedImage)
             self.SetupGraphicView(self.selectedImage)
+            if(self.imageChoosen == False):
+                self.annotateBtn.setEnabled(True)
+                self.exportBtn.setEnabled(True)
+                self.groupBtn.setEnabled(True)
+                self.imageChoosen = True
+
 
 
     def LoadImageAnnotations(self, paths:List[str]):
@@ -165,23 +177,7 @@ class MainUserInterface(QMainWindow):
 
     #On Browse Button Clicked
     def OnBrowseBtnClicked(self ):
-       # self.tempList = list()
-        #self.sourcePath = QFileDialog.getExistingDirectory(None, 
-           #                                              'Select images source', 
-          #                                               QtCore.QDir.rootPath(), 
-         #                                                QFileDialog.ShowDirsOnly)  
-        #for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
-        #    if os.path.isfile(fileName):
-        #        if fileName.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-        #            print(fileName)
-        #            self.tempList.append(fileName)
-
-        #self.SetupListView(self.tempList)
-        #metryka = Metrics.Object()
-        #result = metryka.group(tempList)
-        print("result")
-
-        #self.SourcePath = sourcePath
+       pass
 
 
     def OnAnnotateBtnClicked(self):
