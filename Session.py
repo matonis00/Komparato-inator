@@ -22,8 +22,16 @@ class Session():
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
         self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
-        self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
-
+        #self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
+        try:
+            #self.handler.loadAnnotationsFromConf(self.InOut.deSerialize("config\\annotations.conf"))
+            self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
+        except:
+            self.handler.setAnnotationList([])
+        try:
+            self.handler.loadResultSetFromConf(self.InOut.deSerialize("config\\results.conf"))
+        except:
+            self.handler.setResultsList([])
 
 
 
@@ -42,7 +50,8 @@ class Session():
     def userSavedAnnotation(self, outputPath:str):
         newList = self.handler.userSavedAnnotation(outputPath ,self.userInterface.selectedImage)
         if(newList.__len__ != 0):   
-            self.InOut.saveAnnotations(newList)    
+            #self.InOut.serialize(newList,"config\\annotations.conf")  
+            self.InOut.saveAnnotations(newList)
             self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(self.userInterface.selectedImage))
             
 
@@ -80,6 +89,7 @@ class Session():
 
         dictonary = dict()
         dictonary = self.handler.group(self.userInterface.contentList)
+        self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
         listP = list()
 
         for key in dictonary.keys():

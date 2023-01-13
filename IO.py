@@ -1,6 +1,7 @@
 from typing import  List
 import glob
 import os
+import pickle
 from Annotation import Annotation
 from ResultSet import ResultSet
 from PyQt5.QtGui import QPixmap
@@ -52,10 +53,14 @@ class IO():
         #need to first load it into path
         pass
 
-    def saveResult(self, set:List[ResultSet]):##TODO redo it same as annotations
-        plik = open("config/SavedResults.conf", "a")
-         
-        plik.close()
+    def serialize(self, serializableObject, destination:str):
+        with open(destination, "wb") as f:
+            pickle.dump(serializableObject, f)
+
+    def deSerialize(self, source:str):
+        with open(source, "rb") as f:
+            serializableObject = pickle.load(f)
+            return serializableObject
 
     def findEntry(entry:str)->bool:
         pass

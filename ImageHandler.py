@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pydoc import tempfilepager
 from typing import List,Dict
 from dataclasses import dataclass
@@ -108,8 +109,10 @@ class ImageHandler():
 
 
     def loadAnnotationsFromConf(self, annotationsList:List[Annotation]):
-        for annotation in annotationsList:
-            self.createAnnotation(annotation)
+        self.__annotations=annotationsList
+
+    def loadResultSetFromConf(self, ResultSets:List[ResultSet]):
+        self.__resultSets=ResultSets
 
 
     def userSelectedItem(self, imagePath)->List[str]:
@@ -118,6 +121,17 @@ class ImageHandler():
     def getPathAt(self, index:int)->str:
         return self.__paths[index]
 
+    def getAnnotationList(self)->List[Annotation]:
+        return self.__annotations
+
+    def getResultsList(self)->List[ResultSet]:
+        return self.__resultSets
+
+    def setAnnotationList(self, l:List[Annotation]):
+        self.__annotations=l
+
+    def setResultsList(self,l:List[ResultSet]):
+        self.__resultSets =l
 
     def findEntries(self, imagePath)->List[str]:
         packetStr = [os.path.basename(imagePath)]
@@ -130,8 +144,7 @@ class ImageHandler():
                 return packetStr
         return packetStr
 
-    def saveResultSet():#TODO
-        pass
+
 
     def findResultSet():#TODO
         pass

@@ -22,7 +22,6 @@ class ResultSet():
             return True
         except ValueError:
             return False
-        return False
 
     def removeParamFromDict(self,path:str)->bool:
         try:
