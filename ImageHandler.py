@@ -83,7 +83,13 @@ class ImageHandler():
         found = False
         for resultSet in self.__resultSets:
             if resultSet.metricName == self.metric.metricName:
-                resultSet.content=tempDict
+                for key, valueList in tempDict.items():
+                    if key not in resultSet.content:
+                        resultSet.content[key] = valueList
+                    else:
+                        for value in valueList:
+                            if value not in resultSet.content[key]:
+                                resultSet.content[key].append(value)
                 found = True
                 break
         if not found:
