@@ -17,11 +17,16 @@ class Annotation():
 
 
     def removeParam(self,contentString:str)->bool:
-        self.content.remove(contentString)
-        return True
+        try:
+            self.content.remove(contentString)
+            return True
+        except ValueError:
+            return False
 
 
     def removeParam(self,contentId:int)->bool:
-        self.content.pop(contentId)
-        return True
-
+        try:
+            self.content.pop(contentId)
+            return True
+        except ValueError:
+            return False

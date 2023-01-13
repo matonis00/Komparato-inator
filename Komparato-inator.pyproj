@@ -28,6 +28,7 @@
     <Compile Include="ImageSorter.py" />
     <Compile Include="IO.py" />
     <Compile Include="Metrics.py" />
+    <Compile Include="ResultSet.py" />
     <Compile Include="Session.py" />
     <Compile Include="UserInterface.py" />
   </ItemGroup>

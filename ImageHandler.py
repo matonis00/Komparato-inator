@@ -1,4 +1,5 @@
-from typing import List
+from pydoc import tempfilepager
+from typing import List,Dict
 from dataclasses import dataclass
 from Annotation import Annotation
 from ResultSet import ResultSet
@@ -10,7 +11,7 @@ import os
 class ImageHandler():
     __paths:List[str] 
     __annotations:List[Annotation]
-    __ResultSets:List[ResultSet]
+    __resultSets:List[ResultSet]
     metric:MetricI
 
 
@@ -18,10 +19,83 @@ class ImageHandler():
     def scan():
         pass
 
+
+    def validatePaths(self, paths:List[str])->List[str]:
+        resultPaths = []
+        for path in paths:
+            if not path.startswith("########"):
+                resultPaths.append(path)
+        return resultPaths
+
     #should save results to __paths i suppouse
-    def group(self, tempList)->dict:
-        return self.metric.group(tempList)
+    def group(self, pathList:List[str])->dict:
+        tempDict={}
+        notFoundPaths=[]
+        checkedResultSet = False
+        pathList = self.validatePaths(pathList)
+        ##check if is already in memory
+        for resultSet in self.__resultSets:
+            if resultSet.metricName == self.metric.metricName:
+                checkedResultSet = True
+                for lPath in pathList:
+                    found = False
+                    for key, valueList in resultSet.content.items():
+                         if lPath in valueList:
+                            if key in tempDict:
+                                tempDict[key].append(lPath)
+                            else:
+                                tempDict[key] = [lPath]
+                            found = True
+                            break
+                    if not found:
+                        notFoundPaths.append(lPath)
+
+        ##check if is aeverything is categorized                     
+        if not checkedResultSet:
+            secondDict = self.metric.group(pathList)
+        else:
+            if len(notFoundPaths)==0:
+                return tempDict
+            secondDict = self.metric.group(notFoundPaths)
+
+        for key, valueList in secondDict.items():
+           if key in tempDict:
+               tempDict[key] += valueList
+           else:
+               tempDict[key] = valueList
+        
+        ##Check Undefined
+        tempPaths = []
+        for path in pathList:
+            found = False
+            for key, keyList in secondDict.items():
+                if path in keyList:
+                    found = True
+                    break
+            if not found:
+                if path not in tempPaths:
+                    tempPaths.append(path)
+        if (len(tempPaths)>0):
+            tempDict["Undefined"]=tempPaths
+
+        ##Save if necesarry   
+        found = False
+        for resultSet in self.__resultSets:
+            if resultSet.metricName == self.metric.metricName:
+                resultSet.content=tempDict
+                found = True
+                break
+        if not found:
+            self.createResultSetFromScratch(self.metric.metricName,tempDict)
+
+        return tempDict
     
+    def createResultSet(self,newSet:ResultSet):
+        self.__resultSets.append(newSet)
+
+    def createResultSetFromScratch(self,metricName:str, resultSet:Dict[str,List[str]]):
+        self.__resultSets.append(ResultSet(metricName,resultSet))
+
     def getAnnotationsList(self)->List[Annotation]:
         return self.__annotations
 

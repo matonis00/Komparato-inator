@@ -85,7 +85,7 @@ class Session():
         for key in dictonary.keys():
             listP.append("########"+key+"########")
             listP = listP + dictonary[key]
-        self.InOut.saveResult(metryka.metricName,self.userInterface.contentList)
+        
         self.userInterface.SetupListView(listP)
         #self.userInterface.resutl = self.handler.group(self.userInterface.tempList)
 

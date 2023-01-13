@@ -1,27 +1,36 @@
-from typing import List
-from dataclasses import dataclass
+from typing import Dict, List
+
+class ResultSet():
+
+    def __init__(self,metricName, resultDict:Dict[str,List[str]]):
+        self.content = resultDict
+        self.metricName = metricName
 
 
-@dataclass
-class ResultSet():#TODO REWORK
-    def __init__(self,folderPath, imagePaths:List[str]):
-        self.content=[]
-        self.folderPath = folderPath
-        for path in imagePaths:
-            self.content.append(path)
-
-
-    def addParam(self,contentString:str)->bool:
-        self.content.append(contentString)
+    def addParam(self,key:str,value:str)->bool:
+        keyList = self.content.get(key)
+        if keyList is None:
+             self.content[key] = [value]
+        else:
+              keyList.append(value)
         return True
 
 
-    def removeParam(self,contentString:str)->bool:
-        self.content.remove(contentString)
-        return True
+    def removeParamFromKey(self,key:str,path:str)->bool:
+        try:
+            self.content[key].remove(path)
+            return True
+        except ValueError:
+            return False
+        return False
 
-
-    def removeParam(self,contentId:int)->bool:
-        self.content.pop(contentId)
-        return True
+    def removeParamFromDict(self,path:str)->bool:
+        try:
+            for key, keyList in self.content.items():
+                if path in keyList:
+                    keyList.remove(path)
+                    return True
+        except ValueError:
+            return False
+        return False
 

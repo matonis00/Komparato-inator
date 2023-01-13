@@ -10,8 +10,6 @@ class MetricI():
     
     def __init__(self):
         self.metricName=""
-        self.listOfPaths=[]
-        self.metricName=""
 
 
     def group(self, listOfPaths:List[str]):
@@ -57,7 +55,6 @@ class Object(MetricI):
                     if(listOfItems[len(listOfItems)-1]!=imagePath):
                         listOfItems.append(imagePath)
                         result.update({objectName: listOfItems})
-        print(result)
         return result
 
 
