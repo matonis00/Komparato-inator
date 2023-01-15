@@ -13,6 +13,7 @@
     <RootNamespace>Komparato-inator</RootNamespace>
     <InterpreterId>Global|PythonCore|3.7</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
+    <TestFramework>unittest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +31,9 @@
     <Compile Include="Metrics.py" />
     <Compile Include="ResultSet.py" />
     <Compile Include="Session.py" />
+    <Compile Include="test_Metrics.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UserInterface.py" />
   </ItemGroup>
   <ItemGroup>
