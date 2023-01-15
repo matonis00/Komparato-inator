@@ -1,9 +1,16 @@
+
 from imageai.Detection import ObjectDetection
 import os
 import glob
 import builtins
-
 from typing import List
+#color histogram imports
+import imageio.v3 as iio
+import numpy as np
+import skimage.color
+import skimage.util
+import matplotlib.pyplot as plt
+
 
 
 class MetricI():
@@ -15,8 +22,36 @@ class MetricI():
     def group(self, listOfPaths:List[str]):
         pass
 
+
 class ColorHistogram(MetricI):
-    pass
+    def __init__(self):
+        
+        print("Utworzono metryke histogramu kolorow")
+
+    def drawHistogram(self):
+        image = iio.imread(uri="img\dog2.jpg")
+        
+        # display the image
+        fig, ax = plt.subplots()
+        plt.imshow(image)
+        # tuple to select colors of each channel line
+        colors = ("red", "green", "blue")
+        
+        # create the histogram plot, with three lines, one for
+        # each color
+        plt.figure()
+        plt.xlim([0, 256])
+        for channel_id, color in enumerate(colors):
+            histogram, bin_edges = np.histogram(image[:, :, channel_id], bins=256, range=(0, 256))
+            plt.plot(bin_edges[0:-1], histogram, color=color)
+            
+        
+        plt.title("Color Histogram")
+        plt.xlabel("Color value")
+        plt.ylabel("Pixel count")
+        
+        plt.show()
+   
 
 
 class Object(MetricI):
@@ -55,6 +90,7 @@ class Object(MetricI):
                     if(listOfItems[len(listOfItems)-1]!=imagePath):
                         listOfItems.append(imagePath)
                         result.update({objectName: listOfItems})
+       
         return result
 
 
