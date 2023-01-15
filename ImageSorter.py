@@ -1,7 +1,6 @@
 
 from imageai.Detection import ObjectDetection
 import os
-import glob
 
 def objectDetection():
     execution_path = os.getcwd()

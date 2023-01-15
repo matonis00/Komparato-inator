@@ -216,7 +216,7 @@ class MainUserInterface(QMainWindow):
 
         handDrawMode = False # true if hand drawing mode is on
         rectangleMode = True # if True, draw rectangle.
-        circleMode = False # if True, draw circle.
+        circleMode = False   # if True, draw circle.
         borradorMode = False # if True, use Eraser.
         global textMode # if True, draw circle.
         global isDrawing# true if mouse is pressed
