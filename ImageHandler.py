@@ -23,7 +23,8 @@ class ImageHandler():
         resultPaths = []
         for path in paths:
             if not path.startswith("########"):
-                resultPaths.append(path)
+                if not path in resultPaths:
+                    resultPaths.append(path)
         return resultPaths
 
     #should save results to __paths i suppouse
