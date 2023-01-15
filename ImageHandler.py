@@ -1,5 +1,3 @@
-from __future__ import annotations
-from pydoc import tempfilepager
 from typing import List,Dict
 from dataclasses import dataclass
 from Annotation import Annotation
@@ -47,7 +45,6 @@ class ImageHandler():
                             else:
                                 tempDict[key] = [lPath]
                             found = True
-                            break
                     if not found:
                         notFoundPaths.append(lPath)
 
