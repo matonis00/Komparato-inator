@@ -8,6 +8,7 @@ from ImageHandler import ImageHandler
 import numpy as np
 import cv2 
 import Metrics
+import webbrowser
 
 class Session():
 
@@ -90,6 +91,30 @@ class Session():
         dictonary = dict()
         dictonary = self.handler.group(self.userInterface.contentList)
         self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
+
+        #testing generating html page with result
+        f = open('Result.html', 'w')
+        html_template = """
+        <html>
+        <head>
+        <title>Title</title>
+        </head>
+        <body>
+        <h1>RESULTS</h1>
+        """
+        for key in dictonary.keys():
+            html_template +="<h2>"+key+"</h2><div width='100%'>"
+            for element in dictonary[key]:
+                html_template +="<img src="+element+" alt="+element+" width='200' height='200'>" 
+            html_template +="</div>"
+
+        html_template +="""
+        </body>
+        </html>
+        """
+        f.write(html_template)
+        f.close()
+        webbrowser.open('Result.html')
         listP = list()
 
         for key in dictonary.keys():
