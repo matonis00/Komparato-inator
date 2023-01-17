@@ -96,7 +96,7 @@ class Session():
         for key in GroupedImagesDict.keys():
             html_template +="<h2>"+key+"</h2><div width='100%'>"
             for element in GroupedImagesDict[key]:
-                html_template +="<img src="+element+" alt="+element+" width='200' height='200'>" 
+                html_template +="<img src="+element+" alt="+element+" width='200' height='200'> \n" 
             html_template +="</div>"
 
         html_template +="""

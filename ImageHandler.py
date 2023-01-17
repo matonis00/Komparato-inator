@@ -93,22 +93,25 @@ class ImageHandler():
 
     def group(self, imagePathList:List[str])->dict:
         validImagePathList:List[str] = self.validatePaths(imagePathList)
-        metricResultFound:bool = self.checkIfAlreadyInMemory
+        metricResultFound:bool = self.checkIfAlreadyInMemory()
         if metricResultFound:
             groupedImagesDict, unfoundPaths = self.loadResultsFromMemory(validImagePathList)
             if len(unfoundPaths)==0:
                 return groupedImagesDict
-            newGroupedImagesDict = self.metric.group(unfoundPaths)    
+            newGroupedImagesDict = self.metric.group(unfoundPaths)
+            newGroupedImagesDict = self.mergeDictionaries(newGroupedImagesDict,groupedImagesDict)
         if not metricResultFound:
             newGroupedImagesDict = self.metric.group(validImagePathList)
-        groupedImagesDict = self.mergeDictionaries(groupedImagesDict,newGroupedImagesDict)
-        unfoundPaths:List[str] = self.findUndefinedPaths(validImagePathList,newGroupedImagesDict)
-        if (len(unfoundPaths)>0):
-            if "Undefined" in groupedImagesDict:
-                groupedImagesDict["Undefined"]+=unfoundPaths
+            unfoundPaths = validImagePathList
+
+        
+        undefinedPaths:List[str] = self.findUndefinedPaths(unfoundPaths,newGroupedImagesDict)
+        if (len(undefinedPaths)>0):
+            if "Undefined" in newGroupedImagesDict:
+                newGroupedImagesDict["Undefined"]+=undefinedPaths
             else:
-                groupedImagesDict["Undefined"]=unfoundPaths
-        return groupedImagesDict
+                newGroupedImagesDict["Undefined"]=undefinedPaths
+        return newGroupedImagesDict
     
     def appendResultSet(self,newSet:ResultSet):
         self.__resultSets.append(newSet)
