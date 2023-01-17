@@ -25,7 +25,7 @@ class MetricI():
 
 class ColorHistogram(MetricI):
     def __init__(self):
-        
+        self.metricName="Color"
         print("Utworzono metryke histogramu kolorow")
 
     def drawHistogram(self):

@@ -23,14 +23,12 @@ class Session():
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
         self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
-        #self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
-        try:
-            #self.handler.loadAnnotationsFromConf(self.InOut.deSerialize("config\\annotations.conf"))
-            self.handler.loadAnnotationsFromConf(self.InOut.loadAnnotations())
+        try: 
+            self.handler.setAnnotationList(self.InOut.loadAnnotations())
         except:
             self.handler.setAnnotationList([])
         try:
-            self.handler.loadResultSetFromConf(self.InOut.deSerialize("config\\results.conf"))
+            self.handler.setResultsList(self.InOut.deSerialize("config\\results.conf"))
         except:
             self.handler.setResultsList([])
 
@@ -88,8 +86,9 @@ class Session():
         metryka:Metrics.MetricI = Metrics.Object()
         self.handler.setMetric(metryka)
 
-        dictonary = dict()
-        dictonary = self.handler.group(self.userInterface.contentList)
+        dictionary = dict()
+        dictionary = self.handler.group(self.userInterface.contentList)
+        self.handler.saveResultSetToMemory(dictionary)
         self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
 
         #testing generating html page with result
@@ -102,9 +101,9 @@ class Session():
         <body>
         <h1>RESULTS</h1>
         """
-        for key in dictonary.keys():
+        for key in dictionary.keys():
             html_template +="<h2>"+key+"</h2><div width='100%'>"
-            for element in dictonary[key]:
+            for element in dictionary[key]:
                 html_template +="<img src="+element+" alt="+element+" width='200' height='200'>" 
             html_template +="</div>"
 
@@ -117,9 +116,9 @@ class Session():
         webbrowser.open('Result.html')
         listP = list()
 
-        for key in dictonary.keys():
+        for key in dictionary.keys():
             listP.append("########"+key+"########")
-            listP = listP + dictonary[key]
+            listP = listP + dictionary[key]
         
         self.userInterface.SetupListView(listP)
         #self.userInterface.resutl = self.handler.group(self.userInterface.tempList)

@@ -1,4 +1,4 @@
-from typing import List,Dict
+from typing import List,Dict,Tuple
 from dataclasses import dataclass
 from Annotation import Annotation
 from ResultSet import ResultSet
@@ -20,68 +20,66 @@ class ImageHandler():
 
 
     def validatePaths(self, paths:List[str])->List[str]:
-        resultPaths = []
+        validPaths = []
         for path in paths:
             if not path.startswith("########"):
-                if not path in resultPaths:
-                    resultPaths.append(path)
-        return resultPaths
+                if not path in validPaths:
+                    validPaths.append(path)
+        return validPaths
 
-    #should save results to __paths i suppouse
-    def group(self, pathList:List[str])->dict:
-        tempDict={}
-        notFoundPaths=[]
-        checkedResultSet = False
-        pathList = self.validatePaths(pathList)
-        ##check if is already in memory
+
+    def checkIfAlreadyInMemory(self)->bool:
         for resultSet in self.__resultSets:
             if resultSet.metricName == self.metric.metricName:
-                checkedResultSet = True
-                for lPath in pathList:
+                return True
+
+
+    def loadResultsFromMemory(self, ImagePathList:List[str])->Tuple[Dict[str,List[str]],List[str]]:
+        groupedImagesDict={}
+        unfoundPaths=[]
+        for resultSet in self.__resultSets:
+            if resultSet.metricName == self.metric.metricName:
+                for lPath in ImagePathList:
                     found = False
                     for key, valueList in resultSet.content.items():
                          if lPath in valueList:
-                            if key in tempDict:
-                                tempDict[key].append(lPath)
+                            if key in groupedImagesDict:
+                                groupedImagesDict[key].append(lPath)
                             else:
-                                tempDict[key] = [lPath]
+                                groupedImagesDict[key] = [lPath]
                             found = True
                     if not found:
-                        notFoundPaths.append(lPath)
+                        unfoundPaths.append(lPath)
+        return groupedImagesDict,unfoundPaths
 
-        ##check if is aeverything is categorized                     
-        if not checkedResultSet:
-            secondDict = self.metric.group(pathList)
-        else:
-            if len(notFoundPaths)==0:
-                return tempDict
-            secondDict = self.metric.group(notFoundPaths)
-
+    def mergeDictionaries(self,firstDict:Dict[str,List[str]], secondDict:Dict[str,List[str]]  )->Dict[str,List[str]]:
         for key, valueList in secondDict.items():
-           if key in tempDict:
-               tempDict[key] += valueList
+           if key in firstDict:
+               firstDict[key] += valueList
            else:
-               tempDict[key] = valueList
-        
-        ##Check Undefined
-        tempPaths = []
-        for path in pathList:
+               firstDict[key] = valueList
+
+        return firstDict
+
+    def findUndefinedPaths(self, PathList:List[str], groupedDict:Dict[str,List[str]] )->List[str]:
+        unfoundPaths = []
+        for path in PathList:
             found = False
-            for key, keyList in secondDict.items():
+            for key, keyList in groupedDict.items():
                 if path in keyList:
                     found = True
                     break
             if not found:
-                if path not in tempPaths:
-                    tempPaths.append(path)
-        if (len(tempPaths)>0):
-            tempDict["Undefined"]=tempPaths
+                if path not in unfoundPaths:
+                    unfoundPaths.append(path)
+        return unfoundPaths
 
-        ##Save if necesarry   
+
+    def saveResultSetToMemory(self, resultDict:Dict[str,List[str]]):
         found = False
         for resultSet in self.__resultSets:
             if resultSet.metricName == self.metric.metricName:
-                for key, valueList in tempDict.items():
+                for key, valueList in resultDict.items():
                     if key not in resultSet.content:
                         resultSet.content[key] = valueList
                     else:
@@ -91,33 +89,42 @@ class ImageHandler():
                 found = True
                 break
         if not found:
-            self.createResultSetFromScratch(self.metric.metricName,tempDict)
+            self.appendResultSetFromScratch(self.metric.metricName,resultDict)
 
-        return tempDict
+    def group(self, imagePathList:List[str])->dict:
+        validImagePathList:List[str] = self.validatePaths(imagePathList)
+        metricResultFound:bool = self.checkIfAlreadyInMemory
+        if metricResultFound:
+            groupedImagesDict, unfoundPaths = self.loadResultsFromMemory(validImagePathList)
+            if len(unfoundPaths)==0:
+                return groupedImagesDict
+            newGroupedImagesDict = self.metric.group(unfoundPaths)    
+        if not metricResultFound:
+            newGroupedImagesDict = self.metric.group(validImagePathList)
+        groupedImagesDict = self.mergeDictionaries(groupedImagesDict,newGroupedImagesDict)
+        unfoundPaths:List[str] = self.findUndefinedPaths(validImagePathList,newGroupedImagesDict)
+        if (len(unfoundPaths)>0):
+            if "Undefined" in groupedImagesDict:
+                groupedImagesDict["Undefined"]+=unfoundPaths
+            else:
+                groupedImagesDict["Undefined"]=unfoundPaths
+        return groupedImagesDict
     
-    def createResultSet(self,newSet:ResultSet):
+    def appendResultSet(self,newSet:ResultSet):
         self.__resultSets.append(newSet)
 
-    def createResultSetFromScratch(self,metricName:str, resultSet:Dict[str,List[str]]):
+    def appendResultSetFromScratch(self,metricName:str, resultSet:Dict[str,List[str]]):
         self.__resultSets.append(ResultSet(metricName,resultSet))
 
     def getAnnotationsList(self)->List[Annotation]:
         return self.__annotations
 
-    def createAnnotationFromScratch(self, imgPath:str, annotationList:List[str]):
+    def appendAnnotationFromScratch(self, imgPath:str, annotationList:List[str]):
         self.__annotations.append(Annotation(imgPath,annotationList))
     
 
-    def createAnnotation(self,annotation:Annotation):
+    def appendAnnotation(self,annotation:Annotation):
         self.__annotations.append(annotation)
-
-
-    def loadAnnotationsFromConf(self, annotationsList:List[Annotation]):
-        self.__annotations=annotationsList
-
-    def loadResultSetFromConf(self, ResultSets:List[ResultSet]):
-        self.__resultSets=ResultSets
-
 
     def userSelectedItem(self, imagePath)->List[str]:
         return self.findEntries(imagePath)
@@ -131,11 +138,11 @@ class ImageHandler():
     def getResultsList(self)->List[ResultSet]:
         return self.__resultSets
 
-    def setAnnotationList(self, l:List[Annotation]):
-        self.__annotations=l
+    def setAnnotationList(self, AnnotationList:List[Annotation]):
+        self.__annotations=AnnotationList
 
-    def setResultsList(self,l:List[ResultSet]):
-        self.__resultSets =l
+    def setResultsList(self,ResultsList:List[ResultSet]):
+        self.__resultSets =ResultsList
 
     def findEntries(self, imagePath)->List[str]:
         packetStr = [os.path.basename(imagePath)]
@@ -148,22 +155,6 @@ class ImageHandler():
                 return packetStr
         return packetStr
 
-
-
-    def findResultSet():#TODO
-        pass
-
-    def findImageInResultSet():#TODO
-        pass
-
-    def addImageToResutSet():#TODO
-        pass
-
-    def removeImageFromResultSet():#TODO
-        pass
-
-
-
     def userSavedAnnotation(self, outputPath:str, selectedImage:str)->List[Annotation]:
         found = False
         for annotation in self.__annotations:
@@ -175,7 +166,7 @@ class ImageHandler():
                 if(found == False):
                    annotation.content.append(outputPath)
                 return self.__annotations
-        self.createAnnotationFromScratch(selectedImage,[outputPath])
+        self.appendAnnotationFromScratch(selectedImage,[outputPath])
         return self.__annotations
 
 
