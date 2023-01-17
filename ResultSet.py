@@ -7,7 +7,7 @@ class ResultSet():
         self.metricName = metricName
 
 
-    def addParam(self,key:str,value:str)->bool:
+    def appendPath(self,key:str,value:str)->bool:
         keyList = self.content.get(key)
         if keyList is None:
              self.content[key] = [value]
@@ -16,14 +16,14 @@ class ResultSet():
         return True
 
 
-    def removeParamFromKey(self,key:str,path:str)->bool:
+    def removePathInKey(self,key:str,path:str)->bool:
         try:
             self.content[key].remove(path)
             return True
         except ValueError:
             return False
 
-    def removeParamFromDict(self,path:str)->bool:
+    def removePath(self,path:str)->bool:
         try:
             for key, keyList in self.content.items():
                 if path in keyList:

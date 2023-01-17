@@ -1,5 +1,4 @@
-from pickle import NONE
-from typing import List
+from typing import List, Dict
 from Annotation import Annotation
 from IO import IO
 import UserInterface
@@ -24,7 +23,7 @@ class Session():
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
         self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
         try: 
-            self.handler.setAnnotationList(self.InOut.loadAnnotations())
+            self.handler.setAnnotationList(self.InOut.loadAnnotationsFromConfFile())
         except:
             self.handler.setAnnotationList([])
         try:
@@ -46,11 +45,11 @@ class Session():
     def userSelectedItem(self, imagePath):
         self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(imagePath))
 
+
     def userSavedAnnotation(self, outputPath:str):
-        newList = self.handler.userSavedAnnotation(outputPath ,self.userInterface.selectedImage)
+        newList = self.handler.userSavedAnnotation(outputPath, self.userInterface.selectedImage)
         if(newList.__len__ != 0):   
-            #self.InOut.serialize(newList,"config\\annotations.conf")  
-            self.InOut.saveAnnotations(newList)
+            self.InOut.saveAnnotationsToFile(newList)
             self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(self.userInterface.selectedImage))
             
 
@@ -58,11 +57,13 @@ class Session():
     def __validateKey(self,key) -> bool:
         pass
 
+
     def loadPaths(self):
         path = self.userInterface.getPath("Select source path")
         if(path!="" and path): 
             self.userInterface.sourcePath = path.replace('/',"\\")
             self.userInterface.SetupListView(self.InOut.readPath(self.userInterface.sourcePath))
+            self.userInterface.BrowseBtnClicked()
         else:
             self.userInterface.showMessageBox("Select Proper folder")
 
@@ -82,28 +83,19 @@ class Session():
     def getUI(self)->UserInterface.MainUserInterface:
         return self.userInterface
 
-    def groupImages(self ):
-        metryka:Metrics.MetricI = Metrics.Object()
-        self.handler.setMetric(metryka)
-
-        dictionary = dict()
-        dictionary = self.handler.group(self.userInterface.contentList)
-        self.handler.saveResultSetToMemory(dictionary)
-        self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
-
-        #testing generating html page with result
+    def createWebView(self, GroupedImagesDict:Dict[str,List[str]]):
         f = open('Result.html', 'w')
         html_template = """
         <html>
         <head>
-        <title>Title</title>
+        <title>Komparato-inator</title>
         </head>
         <body>
         <h1>RESULTS</h1>
         """
-        for key in dictionary.keys():
+        for key in GroupedImagesDict.keys():
             html_template +="<h2>"+key+"</h2><div width='100%'>"
-            for element in dictionary[key]:
+            for element in GroupedImagesDict[key]:
                 html_template +="<img src="+element+" alt="+element+" width='200' height='200'>" 
             html_template +="</div>"
 
@@ -113,20 +105,27 @@ class Session():
         """
         f.write(html_template)
         f.close()
-        webbrowser.open('Result.html')
-        listP = list()
+        return True
 
-        for key in dictionary.keys():
-            listP.append("########"+key+"########")
-            listP = listP + dictionary[key]
+    def groupImages(self ):
+        metric:Metrics.MetricI = Metrics.Object()#TODO GET PARAMETER FROM COMBOBOX
+        self.handler.setMetric(metric)
+        GroupedImagesDict:Dict[str,List[str]] = self.handler.group(self.userInterface.contentList)
+        self.handler.saveResultSetToMemory(GroupedImagesDict)
+        self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
+
+        self.createWebView(GroupedImagesDict)
+        webbrowser.open('Result.html')
+        imagesList:List[str] = []
+
+        for key in GroupedImagesDict.keys():
+            imagesList.append("########"+key+"########")
+            imagesList = imagesList + GroupedImagesDict[key]
         
-        self.userInterface.SetupListView(listP)
-        #self.userInterface.resutl = self.handler.group(self.userInterface.tempList)
+        self.userInterface.SetupListView(imagesList)
 
 def main():
     app = UserInterface.QApplication(UserInterface.sys.argv)
-   # imagePath="nowy.jpg"
-    imagePath="CatInHalf.jpg"
     sesja = Session()
     sesja.getUI().show()
     

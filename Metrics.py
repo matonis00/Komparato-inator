@@ -19,7 +19,7 @@ class MetricI():
         self.metricName=""
 
 
-    def group(self, listOfPaths:List[str]):
+    def group(self, pathsList:List[str]):
         pass
 
 
@@ -31,6 +31,8 @@ class ColorHistogram(MetricI):
     def drawHistogram(self):
         image = iio.imread(uri="img\dog2.jpg")
         
+
+        #TODO: CLEAR OR REFAKTOR
         # display the image
         fig, ax = plt.subplots()
         plt.imshow(image)
@@ -60,38 +62,32 @@ class Object(MetricI):
         self.metricName="Object"
         print("Utworzono metryke obiektów")
     
-    def group(self, listOfPaths)->dict:
+    def group(self, pathsList)->dict:
         detector = ObjectDetection()
         detector.setModelTypeAsRetinaNet()
         detector.setModelPath(os.path.abspath("resnet50_coco_best_v2.1.0.h5"))
         detector.loadModel()
+        groupedDict = dict()
 
-        directoryOut = os.path.abspath("newImages")
-
-        listaStringow = listOfPaths
-
-        result = dict()
-
-        for filename in listOfPaths:
+        for filename in pathsList:
             imagePath = os.path.abspath(filename)
-            #if os.path.isfile(imagePath):
             detections = detector.detectObjectsFromImage(input_image=imagePath, output_image_path=imagePath, minimum_percentage_probability=60,display_percentage_probability=False, display_object_name=False,
                                display_box=False)
 
             for eachObject in detections:
                 objectName = eachObject["name"]
 
-                if(result.get(objectName) == None):
-                    tempList = list()
-                    tempList.append(imagePath)
-                    result.update({objectName: tempList})
+                if(groupedDict.get(objectName) == None):
+                    pathsList = list()
+                    pathsList.append(imagePath)
+                    groupedDict.update({objectName: pathsList})
                 else:
-                    listOfItems = result.get(objectName)
+                    listOfItems = groupedDict.get(objectName)
                     if(listOfItems[len(listOfItems)-1]!=imagePath):
                         listOfItems.append(imagePath)
-                        result.update({objectName: listOfItems})
+                        groupedDict.update({objectName: listOfItems})
        
-        return result
+        return groupedDict
 
 
 

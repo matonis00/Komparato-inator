@@ -10,8 +10,8 @@ class IO():
     def __init__(self):
         pass
 
-    def loadAnnotations(self):
-       fileContent = []
+    def loadAnnotationsFromConfFile(self)->List[Annotation]:
+       annotationList = []
        try:
             plik = open("config/annotations.conf", "r")
             filePath=""
@@ -19,26 +19,26 @@ class IO():
                 if linia.startswith("filePath:"):
                     filePath = linia.split("\"")[1].strip()
                 elif linia.startswith("annotations:"):
-                    params=[]
+                    paths=[]
                     for linia in plik:
                         if linia.startswith("{"):
                             continue
                         if linia.startswith("}"):
-                            fileContent.append(Annotation(filePath, params))
+                            annotationList.append(Annotation(filePath, paths))
                             break
-                        params.append(linia.split("\"")[1].strip())
+                        paths.append(linia.split("\"")[1].strip())
             plik.close()
-            return fileContent
+            return annotationList
        except FileNotFoundError:
             plik = open("config/annotations.conf", "w")
             plik.close()
-            return fileContent
+            return annotationList
         
 
 
-    def saveAnnotations(self, annots:List[Annotation]):
+    def saveAnnotationsToFile(self, annotations:List[Annotation]):
             plik = open("config/annotations.conf", "w")
-            for annotate in annots:
+            for annotate in annotations:
                 plik.write("@"+ os.path.basename(annotate.imagePath)+"\n")
                 plik.write("filePath: "+"\""+annotate.imagePath+"\"\n")
                 plik.write("annotations:\n{\n")
@@ -47,11 +47,6 @@ class IO():
                 plik.write("}\n")    
             plik.close()
 
-    def loadResult()->List[ResultSet]:#placeholder for ResultSet  #TODO
-        #need to create ResultSet
-        #need to coolect List[ResultSet] In image Handler
-        #need to first load it into path
-        pass
 
     def serialize(self, serializableObject, destination:str):
         with open(destination, "wb") as f:
@@ -62,18 +57,14 @@ class IO():
             serializableObject = pickle.load(f)
             return serializableObject
 
-    def findEntry(entry:str)->bool:
-        pass
     def exportImage(self, pixmap:QPixmap, format:str)->bool:
         pixmap.save(format);
         return True
 
     def readPath(self,sourcePath)->list:
-        tempList = list()
+        pathsList = list()
         for fileName in glob.iglob(sourcePath + '**/**', recursive=True):
             if os.path.isfile(fileName):
                 if fileName.lower().endswith(('.jpg', '.jpeg', '.png')):
-                    print(fileName)
-                    #if fileName not in tempList:
-                    tempList.append(fileName)
-        return tempList
+                    pathsList.append(fileName)
+        return pathsList

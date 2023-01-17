@@ -47,8 +47,8 @@ class DialogBox(QDialog):
         
 
 class MainUserInterface(QMainWindow):
-    tempList = list()
-    resutl= dict()
+    #tempList = list()
+    #resutl= dict()
     saveAnnotationSignal = QtCore.pyqtSignal(str)
     onSelectItemSignal = QtCore.pyqtSignal(str)
     global ListViewModel
@@ -57,12 +57,17 @@ class MainUserInterface(QMainWindow):
 
     def __init__(self,UIFilePath:str="./UIFiles/form.ui"):
         super(MainUserInterface,self).__init__()
+
         loadUi(UIFilePath,self)
-        self.selectedImage = "" #PlaceHolder!!! should be replaced with proper verivication
+        #setup variables
+        self.selectedImage = "" 
         self.sourcePath = ""
         self.imageChoosen = False
         self.folderChoosen = False
-        self.Dbox=DialogBox()
+        self.Dbox = DialogBox()
+        self.contentList = list()
+
+        #load objects from UI
         self.annotateBtn = self.findChild(QPushButton,"adnoteButton")
         self.groupBtn = self.findChild(QPushButton,"groupButton")
         self.browseBtn = self.findChild(QPushButton,"browseButton")
@@ -70,39 +75,36 @@ class MainUserInterface(QMainWindow):
         self.metricComboBox = self.findChild(QComboBox,"comboBox")
         self.annotationComboBox = self.findChild(QComboBox,"comboBox_2")
         self.listView = self.findChild(QListView,"listView")
-        self.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.graphicView = self.findChild(QLabel,"graphicsView")
         self.sizeLabel = self.findChild(QLabel,"sizeLabel")
-        self.listView.clicked.connect(self.OnItemSelected)
-        self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
-        #self.groupBtn.clicked.connect(self.OnGroupBtnClicked) #No Neccesary anymore
-        self.browseBtn.clicked.connect(self.OnBrowseBtnClicked)
-        self.contentList = list()
 
-
-        #buttons setup
+        #setup objects
+        self.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.listView.setModel(ListViewModel)
         self.annotateBtn.setEnabled(False)
         self.exportBtn.setEnabled(False)
         self.groupBtn.setEnabled(False)
 
-        #QlistView Inicialization
-        self.listView.setModel(ListViewModel)
-        #Image visualization Inicialization
         size = QtCore.QSize(471.0,471.0)
         whiteColor = QtGui.QColor(255,255,255)
         whitePixmap = QtGui.QPixmap(size)
         whitePixmap.fill(whiteColor)
         self.graphicView.setPixmap(whitePixmap)
+
+        #setup listeners
+        self.listView.clicked.connect(self.OnItemSelected)
+        self.annotateBtn.clicked.connect(self.OnAnnotateBtnClicked)
+
        
 
         
 
-    def SetupListView(self, ItemList):
+    def SetupListView(self, itemList):
         ListViewModel.clear()
-        self.contentList = ItemList
-        for elem in ItemList:
-            item = QtGui.QStandardItem(os.path.basename(elem))
-            ListViewModel.appendRow(item)
+        self.contentList = itemList
+        for item in itemList:
+            itemBaseName = QtGui.QStandardItem(os.path.basename(item))
+            ListViewModel.appendRow(itemBaseName)
 
     def SetupGraphicView(self, imagePath):
         pixmap = QtGui.QPixmap(imagePath)
@@ -126,9 +128,9 @@ class MainUserInterface(QMainWindow):
 
 
 
-    def LoadImageAnnotations(self, paths:List[str]):
+    def LoadImageAnnotations(self, pathsList:List[str]):
         self.annotationComboBox.clear()
-        for path in paths:
+        for path in pathsList:
             self.annotationComboBox.addItem(path)
         self.annotationComboBox.setCurrentIndex(0)
 
@@ -151,20 +153,21 @@ class MainUserInterface(QMainWindow):
         except:
              self.SetupGraphicView(baseImagePath)
 
-        #print ("selected item index found at %s with data: %s" % (index.row(), index.data()))
+        
 
     def getPath(self,title:str):
-        tempstr =  QFileDialog.getExistingDirectory(None, 
+        dirPath =  QFileDialog.getExistingDirectory(None, 
                                                       title, 
                                                        QtCore.QDir.rootPath(), 
                                                        QFileDialog.ShowDirsOnly)
-        return tempstr
+        return dirPath
         
 
     def getSavePath(self)->str:
         filepath, _ =QFileDialog.getSaveFileName(filter="Image (*.png);;Image (*.jpg)")
         return filepath
       
+
     def showMessageBox(self,text:str):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
@@ -174,9 +177,7 @@ class MainUserInterface(QMainWindow):
         msg.setDefaultButton(QMessageBox.Ok)
         msg.exec_()
 
-
-    #On Browse Button Clicked
-    def OnBrowseBtnClicked(self ):
+    def BrowseBtnClicked(self ):
              if(self.folderChoosen == False):
                 self.groupBtn.setEnabled(True)
                 self.folderChoosen = True

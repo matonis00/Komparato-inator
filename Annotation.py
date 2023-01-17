@@ -11,22 +11,22 @@ class Annotation():
             self.content.append(param)
 
 
-    def addParam(self,contentString:str)->bool:
-        self.content.append(contentString)
+    def appendPath(self,path:str)->bool:
+        self.content.append(path)
         return True
 
 
-    def removeParam(self,contentString:str)->bool:
+    def removePathAt(self,path:str)->bool:
         try:
-            self.content.remove(contentString)
+            self.content.remove(path)
             return True
         except ValueError:
             return False
 
 
-    def removeParam(self,contentId:int)->bool:
+    def removePathAt(self,index:int)->bool:
         try:
-            self.content.pop(contentId)
+            self.content.pop(index)
             return True
         except ValueError:
             return False
