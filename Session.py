@@ -88,18 +88,78 @@ class Session():
         html_template = """
         <html>
         <head>
+        <style>
+            img {
+                width: 100%;
+                height: auto;
+                display: block;
+                margin-bottom: 20px;
+                padding: 10px;
+                background: #ffeefe;
+                box-shadow: 0 0 5px rgb(0, 0, 0, .9);
+                box-sizing: border-box;
+            }
+
+
+            .container {
+                column-count: 3;
+                max-width: 1000px;
+                margin: 0 auto;
+                background: #263a96;
+                padding: 30px;
+                box-shadow: 10px 10px 8px #ACC2FF;
+                border-radius: 00px 0px 30px 30px;
+            }
+
+
+            h1 {
+                padding-top: 30px;
+                font-family: Montserrat;
+                color: #fefefe;
+                text-align:center;
+
+            }
+            h2 {
+                font-family: Montserrat;
+                color: #fefefe;
+                margin-top: 100px;
+                margin-bottom: 0;
+                border-radius: 30px 30px 0px 0px;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                background: #263a96;
+                max-width: 1000px;
+                padding: 30px;
+                box-shadow: 10px 13px 8px #ACC2FF;
+            }
+                h2:first-letter {
+                    text-transform: uppercase;
+                }
+            body {
+                background: rgb(255,238,255);
+                background: linear-gradient(90deg, rgba(255,238,255,1) 0%, rgba(243,233,231,1) 100%);
+            }
+        </style>
+        <title>Wynik Grupowania</title>
         <title>Komparato-inator</title>
         </head>
         <body>
-        <h1>RESULTS</h1>
+        <div width = "100%">
         """
         for key in GroupedImagesDict.keys():
-            html_template +="<h2>"+key+"</h2><div width='100%'>"
+            html_template +="<h2>"+key+"</h2>"
+            html_template +="""
+            <div class="container">
+            """
             for element in GroupedImagesDict[key]:
-                html_template +="<img src="+element+" alt="+element+" width='200' height='200'> \n" 
-            html_template +="</div>"
+                html_template +="<img src=\""+element+"\" >" 
+            html_template +="""
+            </div>
+            """
 
         html_template +="""
+        </div>
         </body>
         </html>
         """
