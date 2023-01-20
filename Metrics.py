@@ -1,5 +1,5 @@
-
 from imageai.Detection import ObjectDetection
+import cv2
 import os
 import glob
 import builtins
@@ -10,7 +10,8 @@ import numpy as np
 import skimage.color
 import skimage.util
 import matplotlib.pyplot as plt
-
+import image_similarity_measures
+from image_similarity_measures.quality_metrics import ssim
 
 
 class MetricI():
@@ -93,5 +94,38 @@ class Object(MetricI):
 
 
 class Identity(MetricI):
-    pass
+    def __init__(self):
+        self.metricName="Identity"
+        print("Utworzono metryke podobieństwa")
 
+    def group(self, pathsList)->dict:
+
+        minSimilarity = 0.85
+        resultDict = dict()
+
+        for filename in pathsList: 
+            test_img = cv2.imread(filename)
+        
+            ssim_measures = {}
+        
+            scale_percent = 100 # percent of original img size
+            width = int(test_img.shape[1] * scale_percent / 100)
+            height = int(test_img.shape[0] * scale_percent / 100)
+            dim = (width, height)
+        
+            for img_path in pathsList:
+                data_img = cv2.imread(img_path)
+                resized_img = cv2.resize(data_img, dim, interpolation = cv2.INTER_AREA)
+                ssim_measures[img_path] = ssim(test_img, resized_img)
+            
+            similar = list()
+
+            for key, value in ssim_measures.items():
+                if (value > minSimilarity):
+                    similar.append(key)
+
+                    
+            if similar.size != 0:
+                resultDict.update({filename: similar})
+
+        return resultDict
