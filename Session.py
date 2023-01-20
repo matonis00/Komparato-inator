@@ -35,7 +35,7 @@ class Session():
         except:
             self.handler.setResultsList([])
         self.fillMetricList([Metrics.Identity(),Metrics.Object()])
-        self.CurrentMetric = self.__metricList[0]
+        self.currentMetricIndex = 0
         self.userInterface.setupMetricsComboBox(self.getMetricNames())
 
 
@@ -59,7 +59,7 @@ class Session():
         self.userInterface.SetupGraphicViewWithAnnotation(imagePath, annotationPath)
 
     def onMetricComboBoxChanged(self, index):
-        self.CurrentMetric = self.__metricList[index]
+        self.currentMetricIndex = index
     
 
     def userSelectedItem(self, imagePath):
@@ -192,7 +192,7 @@ class Session():
 
     def groupImages(self ):
         
-        self.handler.setMetric(self.CurrentMetric)
+        self.handler.setMetric(self.__metricLis[self.currentMetricIndex])
         GroupedImagesDict:Dict[str,List[str]] = self.handler.group(self.userInterface.contentList)
         self.handler.saveResultSetToMemory(GroupedImagesDict)
         self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")
