@@ -114,9 +114,10 @@ class Identity(MetricI):
             dim = (width, height)
         
             for img_path in pathsList:
-                data_img = cv2.imread(img_path)
-                resized_img = cv2.resize(data_img, dim, interpolation = cv2.INTER_AREA)
-                ssim_measures[img_path] = ssim(test_img, resized_img)
+                if img_path != filename:
+                    data_img = cv2.imread(img_path)
+                    resized_img = cv2.resize(data_img, dim, interpolation = cv2.INTER_AREA)
+                    ssim_measures[img_path] = ssim(test_img, resized_img)
             
             similar = list()
 
