@@ -97,6 +97,10 @@ class MainUserInterface(QMainWindow):
 
        
 
+    def setupMetricsComboBox(self, metricList:List[str]):
+         self.metricComboBox.clear()
+         for metric in metricList:
+             self.metricComboBox.addItem(metric)
         
 
     def SetupListView(self, itemList):

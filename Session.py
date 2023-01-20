@@ -1,3 +1,4 @@
+from ast import Index
 from typing import List, Dict
 from Annotation import Annotation
 from IO import IO
@@ -13,6 +14,8 @@ class Session():
 
     def __init__(self):
         self.__isPremium:bool
+        self.__metricList:List[Metrics.MetricI]=[]
+        
         self.userInterface = UserInterface.MainUserInterface()
         self.InOut:IO=IO()
         self.handler:ImageHandler = ImageHandler([],[],[],Metrics.MetricI())
@@ -22,6 +25,7 @@ class Session():
         self.userInterface.saveAnnotationSignal.connect(self.userSavedAnnotation)
         self.userInterface.onSelectItemSignal.connect(self.userSelectedItem)
         self.userInterface.annotationComboBox.currentIndexChanged.connect(self.onAnnotationComboBoxChanged)
+        self.userInterface.metricComboBox.currentIndexChanged.connect(self.onMetricComboBoxChanged)
         try: 
             self.handler.setAnnotationList(self.InOut.loadAnnotationsFromConfFile())
         except:
@@ -30,8 +34,21 @@ class Session():
             self.handler.setResultsList(self.InOut.deSerialize("config\\results.conf"))
         except:
             self.handler.setResultsList([])
+        self.fillMetricList([Metrics.Identity(),Metrics.Object()])
+        self.CurrentMetric = self.__metricList[0]
+        self.userInterface.setupMetricsComboBox(self.getMetricNames())
 
 
+    
+    def fillMetricList(self,metricList:List[Metrics.MetricI]):
+        for metric in metricList:
+            self.__metricList.append(metric)
+
+    def getMetricNames(self)->List[str]:
+        metricNames=[]
+        for metric in self.__metricList:
+            metricNames.append(metric.metricName)
+        return metricNames
 
     def onAnnotationComboBoxChanged(self, index):
         imagePath = self.userInterface.selectedImage
@@ -41,6 +58,9 @@ class Session():
             annotationPath=""
         self.userInterface.SetupGraphicViewWithAnnotation(imagePath, annotationPath)
 
+    def onMetricComboBoxChanged(self, index):
+        self.CurrentMetric = self.__metricList[index]
+    
 
     def userSelectedItem(self, imagePath):
         self.userInterface.LoadImageAnnotations(self.handler.userSelectedItem(imagePath))
@@ -167,9 +187,12 @@ class Session():
         f.close()
         return True
 
+
+
+
     def groupImages(self ):
-        metric:Metrics.MetricI = Metrics.Object()#TODO GET PARAMETER FROM COMBOBOX
-        self.handler.setMetric(metric)
+        
+        self.handler.setMetric(self.CurrentMetric)
         GroupedImagesDict:Dict[str,List[str]] = self.handler.group(self.userInterface.contentList)
         self.handler.saveResultSetToMemory(GroupedImagesDict)
         self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")

@@ -14,9 +14,11 @@ class ImageHandler():
     metric:MetricI
 
 
-
     def scan():
         pass
+
+
+   
 
 
     def validatePaths(self, paths:List[str])->List[str]:

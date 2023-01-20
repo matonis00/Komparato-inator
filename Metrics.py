@@ -60,7 +60,7 @@ class ColorHistogram(MetricI):
 class Object(MetricI):
     
     def __init__(self):
-        self.metricName="Object"
+        self.metricName="Obiekty"
         print("Utworzono metryke obiektów")
     
     def group(self, pathsList)->dict:
@@ -95,7 +95,7 @@ class Object(MetricI):
 
 class Identity(MetricI):
     def __init__(self):
-        self.metricName="Identity"
+        self.metricName="Podobieńtwo"
         print("Utworzono metryke podobieństwa")
 
     def group(self, pathsList)->dict:
@@ -126,7 +126,7 @@ class Identity(MetricI):
                     similar.append(key)
 
                     
-            if similar.size != 0:
+            if len(similar) != 0:
                 resultDict.update({filename: similar})
 
         return resultDict
