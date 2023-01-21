@@ -10,34 +10,34 @@ class Test_test_Metrics(unittest.TestCase):
         imageList = list()
 
         imageList.append(str(os.path.abspath('img\\airplane1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\airplane2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bananas.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bicycleAndCar.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bicycleAndPerson.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bird1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bird2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\boat1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\boat2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bus1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\bus2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\car1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\car2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\cow1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\cow2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\dog1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\dog2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\horse1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\horse2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\motorcycle1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\motorcycle2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\personAndDog.jpg')));
-        imageList.append(str(os.path.abspath('\img\\personAndTie.jpg')));
-        imageList.append(str(os.path.abspath('\img\\sheep1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\sheep2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\train1.jpg')));
-        imageList.append(str(os.path.abspath('\img\\train2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\truck2.jpg')));
-        imageList.append(str(os.path.abspath('\img\\truck2.jpg')));
+        imageList.append(str(os.path.abspath('img\\airplane2.jpg')));
+        imageList.append(str(os.path.abspath('img\\bananas.jpg')));
+        imageList.append(str(os.path.abspath('img\\bicycleAndCar.jpg')));
+        imageList.append(str(os.path.abspath('img\\bicycleAndPerson.jpg')));
+        imageList.append(str(os.path.abspath('img\\bird1.jpg')));
+        imageList.append(str(os.path.abspath('img\\bird2.jpg')));
+        imageList.append(str(os.path.abspath('img\\boat1.jpg')));
+        imageList.append(str(os.path.abspath('img\\boat2.jpg')));
+        imageList.append(str(os.path.abspath('img\\bus1.jpg')));
+        imageList.append(str(os.path.abspath('img\\bus2.jpg')));
+        imageList.append(str(os.path.abspath('img\\car1.jpg')));
+        imageList.append(str(os.path.abspath('img\\car2.jpg')));
+        imageList.append(str(os.path.abspath('img\\cow1.jpg')));
+        imageList.append(str(os.path.abspath('img\\cow2.jpg')));
+        imageList.append(str(os.path.abspath('img\\dog1.jpg')));
+        imageList.append(str(os.path.abspath('img\\dog2.jpg')));
+        imageList.append(str(os.path.abspath('img\\horse1.jpg')));
+        imageList.append(str(os.path.abspath('img\\horse2.jpg')));
+        imageList.append(str(os.path.abspath('img\\motorcycle1.jpg')));
+        imageList.append(str(os.path.abspath('img\\motorcycle2.jpg')));
+        imageList.append(str(os.path.abspath('img\\personAndDog.jpg')));
+        imageList.append(str(os.path.abspath('img\\personAndTie.jpg')));
+        imageList.append(str(os.path.abspath('img\\sheep1.jpg')));
+        imageList.append(str(os.path.abspath('img\\sheep2.jpg')));
+        imageList.append(str(os.path.abspath('img\\train1.jpg')));
+        imageList.append(str(os.path.abspath('img\\train2.jpg')));
+        imageList.append(str(os.path.abspath('img\\truck2.jpg')));
+        imageList.append(str(os.path.abspath('img\\truck2.jpg')));
 
         result = obj.group(imageList)
 
