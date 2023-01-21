@@ -75,8 +75,41 @@ class Test_test_Metrics(unittest.TestCase):
         self.assertTrue(os.path.abspath('img\\truck2.jpg')in result.get('truck'));
         self.assertTrue(os.path.abspath('img\\truck2.jpg')in result.get('truck'));
 
+    def testMethricIdentity(self):
 
-        #self.fail("Not implemented")
+        obj = Metrics.Identity();
+
+        imageList = list()
+
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat1.jpg');
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat2.png');
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat3.jpg');
+
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cow1.jpg');
+
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\dog1.jpg');
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\dog2.jpg');
+
+        imageList.append('C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\lcd1.jpg');
+
+        result = obj.group(imageList)
+
+        catSet = {"C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat1.jpg", 
+                  "C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat2.png", 
+                  "C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\cat3.jpg",
+                  'C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\dog2.jpg'}
+
+        dogSet = {'C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\dog1.jpg',
+                  'C:\\Users\\Jakub\\Desktop\\IO\\komparato-inator\\similar\\dog2.jpg'}
+
+        foundGroups = 0
+        for key in result:
+            tempSet = set(result.get(key))
+            if tempSet == catSet or tempSet == dogSet:
+                foundGroups = foundGroups + 1
+        
+        self.assertEqual(foundGroups, 2);
+
 
 if __name__ == '__main__':
     unittest.main()

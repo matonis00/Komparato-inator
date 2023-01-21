@@ -192,7 +192,7 @@ class Session():
 
     def groupImages(self ):
         
-        self.handler.setMetric(self.__metricLis[self.currentMetricIndex])
+        self.handler.setMetric(self.__metricList[self.currentMetricIndex])
         GroupedImagesDict:Dict[str,List[str]] = self.handler.group(self.userInterface.contentList)
         self.handler.saveResultSetToMemory(GroupedImagesDict)
         self.InOut.serialize(self.handler.getResultsList(),"config\\results.conf")

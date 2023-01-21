@@ -100,8 +100,10 @@ class Identity(MetricI):
 
     def group(self, pathsList)->dict:
 
+        groupNumber = 1
         minSimilarity = 0.85
         resultDict = dict()
+        foundImages = set()
 
         for filename in pathsList: 
             test_img = cv2.imread(filename)
@@ -115,18 +117,23 @@ class Identity(MetricI):
         
             for img_path in pathsList:
                 if img_path != filename:
-                    data_img = cv2.imread(img_path)
-                    resized_img = cv2.resize(data_img, dim, interpolation = cv2.INTER_AREA)
-                    ssim_measures[img_path] = ssim(test_img, resized_img)
+                    if img_path not in foundImages:
+                        data_img = cv2.imread(img_path)
+                        resized_img = cv2.resize(data_img, dim, interpolation = cv2.INTER_AREA)
+                        ssim_measures[img_path] = ssim(test_img, resized_img)
             
             similar = list()
 
             for key, value in ssim_measures.items():
                 if (value > minSimilarity):
                     similar.append(key)
+                    foundImages.add(key)
 
                     
             if len(similar) != 0:
-                resultDict.update({filename: similar})
-
+                name = "Group No."+str(groupNumber)
+                similar.append(filename)
+                resultDict.update({name: similar})
+                foundImages.add(filename)
+                groupNumber = groupNumber + 1
         return resultDict
