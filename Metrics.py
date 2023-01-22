@@ -1,10 +1,10 @@
+import imageai
 from imageai.Detection import ObjectDetection
 import cv2
 import os
 import glob
 import builtins
 from typing import List
-#color histogram imports
 import imageio.v3 as iio
 import numpy as np
 import skimage.color

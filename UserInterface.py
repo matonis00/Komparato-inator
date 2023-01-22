@@ -1,6 +1,5 @@
 from __future__ import annotations
 import math
-import string
 from PIL import Image, ImageQt
 from PyQt5.QtWidgets import QApplication,QMessageBox, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QVBoxLayout, QLineEdit, QMainWindow, QPushButton, QListView, QGraphicsView,QComboBox, QFileDialog
 from PyQt5 import QtCore, QtGui

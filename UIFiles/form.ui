@@ -39,7 +39,7 @@ border-color: #263a96;</string>
   <widget class="QPushButton" name="adnoteButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>234</x>
      <y>530</y>
      <width>80</width>
      <height>31</height>
@@ -68,7 +68,7 @@ color: #fbfbfb;
   <widget class="QPushButton" name="groupButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>36</x>
      <y>530</y>
      <width>80</width>
      <height>31</height>
@@ -100,9 +100,9 @@ color: #fbfbfb;
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>121</x>
      <y>530</y>
-     <width>91</width>
+     <width>108</width>
      <height>31</height>
     </rect>
    </property>
