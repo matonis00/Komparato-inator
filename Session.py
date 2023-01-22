@@ -108,6 +108,10 @@ class Session():
         <html>
         <head>
         <style>
+             @font-face {
+                font-family:'Montserrat';
+                src: URL('font/Montserrat-VariableFont_wght.ttf') format('truetype');
+                }
             img {
                 width: 100%;
                 height: auto;
